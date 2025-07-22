@@ -1,0 +1,42 @@
+.tew-footer {
+   background-color: #f5f5dc; /* beige */
+  color: black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+
+.footer-left,
+.footer-center,
+.footer-right {
+  flex: 1;
+  text-align: center;
+}
+
+.footer-left {
+  text-align: left;
+}
+
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.footer-right a:hover {
+  transform: scale(1.1);
+}
+
+.footer-center div:first-child {
+  font-weight: bold;
+}
+
+.socials a {
+  margin: 0 10px;
+  color: inherit;
+  font-size: 1.5rem;
+}

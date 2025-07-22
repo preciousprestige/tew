@@ -1,0 +1,144 @@
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 40px 20px;
+}
+
+.product-card {
+  background-color: #fdfaf5;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  overflow: hidden;
+  padding: 16px;
+  text-align: center;
+}
+
+.product-image-placeholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: #e4e0db;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.product-name {
+  font-weight: 600;
+  margin: 4px 0;
+}
+
+.product-price {
+  font-size: 14px;
+  color: #333;
+}
+
+.product-discount {
+  font-size: 12px;
+  color: #d9534f;
+}
+
+.add-to-cart-btn {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: black;
+  color: beige;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.section-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: black;
+  text-align: left;
+  margin: 40px 20px 10px;
+  font-family: 'Playfair Display', serif;
+}
+
+.product-section-wrapper {
+  padding-bottom: 80px;
+}
+
+.product-section {
+  margin-bottom: 60px;
+}
+
+/* Existing styles for .product-grid, .product-card, etc. remain unchanged */
+
+.scroll-container {
+  overflow-x: auto;
+  padding: 0 20px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.product-grid {
+  display: flex;
+  gap: 20px;
+  padding-bottom: 10px;
+  min-width: max-content;
+}
+
+.product-card {
+  min-width: 220px;
+  flex: 0 0 auto;
+  background: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.product-image-placeholder {
+  height: 200px;
+  background: #eaeaea;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* Responsive size tweak for smaller screens */
+@media (max-width: 768px) {
+  .product-card {
+    min-width: 180px;
+  }
+}
+
+.horizontal-scroll-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 10px;
+}
+.horizontal-scroll-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ensure .product-grid stays inline inside horizontal scroll */
+.product-grid {
+  display: flex;
+  gap: 20px;
+  min-width: max-content;
+}
