@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/tew/static/css/main.74b09202.css",
-    "main.js": "/tew/static/js/main.557aa2f6.js",
+    "main.css": "/tew/static/css/main.bb5a07ea.css",
+    "main.js": "/tew/static/js/main.107352ac.js",
     "static/js/453.bd406512.chunk.js": "/tew/static/js/453.bd406512.chunk.js",
     "static/media/intro2.jpg": "/tew/static/media/intro2.8fd9d49e253dfca755f2.jpg",
     "static/media/intro1.jpg": "/tew/static/media/intro1.b8f08188d94b6305b87e.jpg",
@@ -12,12 +12,12 @@
     "static/media/dancing-script-vietnamese-400-normal.woff": "/tew/static/media/dancing-script-vietnamese-400-normal.2c07c72dd97de0d672af.woff",
     "static/media/dancing-script-vietnamese-400-normal.woff2": "/tew/static/media/dancing-script-vietnamese-400-normal.608e7b2d4ae6bf473059.woff2",
     "index.html": "/tew/index.html",
-    "main.74b09202.css.map": "/tew/static/css/main.74b09202.css.map",
-    "main.557aa2f6.js.map": "/tew/static/js/main.557aa2f6.js.map",
+    "main.bb5a07ea.css.map": "/tew/static/css/main.bb5a07ea.css.map",
+    "main.107352ac.js.map": "/tew/static/js/main.107352ac.js.map",
     "453.bd406512.chunk.js.map": "/tew/static/js/453.bd406512.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.74b09202.css",
-    "static/js/main.557aa2f6.js"
+    "static/css/main.bb5a07ea.css",
+    "static/js/main.107352ac.js"
   ]
 }
