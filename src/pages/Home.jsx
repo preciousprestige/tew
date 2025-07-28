@@ -1,8 +1,9 @@
 // src/Home.jsx
 import React from 'react';
-import Carousel from './components/Carousel';
-import ProductGrid from './components/ProductGrid';
-import './App.css';
+import Carousel from '../components/Carousel';
+import ProductGrid from '../components/ProductGrid';
+import ChatWidget from "../components/ChatWidget";
+import '../App.css';
 import './Home.css';
 
 export default function Home() {
@@ -10,6 +11,9 @@ export default function Home() {
     const section = document.getElementById('product-sections');
     if (section) section.scrollIntoView({ behavior: 'smooth' });
   };
+  <section id="shop" className="your-shop-section-class">
+  {/* Your shop content here */}
+</section>
 
   return (
     <div className="home-page">
@@ -30,10 +34,11 @@ export default function Home() {
 
       {/* Carousel */}
       <Carousel />
+      <ChatWidget />
 
       {/* Fashion Statement Section */}
       <div className="fashion-statement">
-        <h2 className="fashion-heading">Fashion Statement</h2>
+        <h2 className="fashion-heading">About us</h2>
         <p className="fashion-text">
           Each collection is thoughtfully designed to reflect timeless elegance while embracing contemporary trends, ensuring our pieces resonate with the discerning consumer. We strive to empower individuals to express their unique identities through fashion, making every garment a statement of confidence and grace.
         </p>

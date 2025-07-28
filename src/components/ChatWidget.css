@@ -1,0 +1,148 @@
+/* ChatWidget.css */
+
+.chat-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.chat-icon {
+  background-color: black;
+  color: white;
+  padding: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.chat-icon:hover {
+  transform: scale(1.05);
+}
+
+.chat-box {
+  width: 330px;
+  height: 420px;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Courier New', monospace;
+}
+
+.chat-tabs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: black;
+  color: white;
+  padding: 12px 16px;
+}
+
+.chat-tabs svg {
+  font-size: 20px;
+  cursor: pointer;
+  margin-right: 8px;
+  color: white;
+}
+
+.active-icon {
+  color: #f5c7b8;
+}
+
+.close-icon {
+  cursor: pointer;
+  font-size: 20px;
+  margin-left: auto;
+  color: white;
+}
+
+.chat-home,
+.chat-convo,
+.faq-section {
+  padding: 16px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.faq-btn {
+  margin-top: 10px;
+  background-color: black;
+  color: white;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.faq-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.faq-section li {
+  margin-bottom: 14px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+}
+
+.faq-section h4 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.messages {
+  flex: 1;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message.bot {
+  background-color: #f0f0f0;
+  align-self: flex-start;
+  padding: 10px;
+  border-radius: 12px;
+  max-width: 80%;
+  font-size: 14px;
+}
+
+.message.user {
+  background-color: #d3a39f;
+  align-self: flex-end;
+  color: white;
+  padding: 10px;
+  border-radius: 12px;
+  max-width: 80%;
+  font-size: 14px;
+}
+
+.chat-input {
+  width: 100%;
+  height: 50px;
+  resize: none;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+}
+
+.send-btn {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 14px;
+}

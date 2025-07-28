@@ -1,51 +1,94 @@
-// src/components/Header.jsx
 import React, { useState } from "react";
-import { FaInstagram, FaEnvelope, FaWhatsapp } from "react-icons/fa";
 import "./Header.css";
+import AuthModal from "./AuthModal";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Header({ cartCount }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showAccountDropdown, setShowAccountDropdown] = useState(false);
+  const [authModalType, setAuthModalType] = useState(null); // 'login' or 'register'
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavigate = (path, scrollToSelector) => {
+    setMenuOpen(false);
+
+    const scrollAfterNav = () => {
+      setTimeout(() => {
+        const el = document.querySelector(scrollToSelector);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 300); // Delay to allow page render
+    };
+
+    if (location.pathname !== path) {
+      navigate(path);
+      if (scrollToSelector) {
+        setTimeout(scrollAfterNav, 100);
+      }
+    } else if (scrollToSelector) {
+      scrollAfterNav();
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleOpenModal = (type) => {
+    setAuthModalType(type);
+    setShowAccountDropdown(false);
+  };
 
   return (
-    <header className="tew-header">
-      <div className="header-left">
-        <div
-          className="hamburger"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          &#9776;
-        </div>
-        {menuOpen && (
-          <div className="side-menu">
-            <a
-              href="https://www.instagram.com/the.exquisitewoman_"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaInstagram style={{ color: "#E1306C", fontSize: "20px" }} />
-            </a>
-            <a href="mailto:theexquisitewoman01@gmail.com">
-              <FaEnvelope style={{ color: "#D44638", fontSize: "20px" }} />
-            </a>
-            <a
-              href="https://wa.me/message/A4SGQYD3CYY4B1"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaWhatsapp style={{ color: "#25D366", fontSize: "20px" }} />
-            </a>
+    <>
+      {authModalType && (
+        <AuthModal
+          type={authModalType}
+          onClose={() => setAuthModalType(null)}
+        />
+      )}
+
+      <header className="tew-header">
+        <div className="header-left">
+          <div
+            className={`hamburger ${menuOpen ? "open" : ""}`}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <div className="bar top"></div>
+            <div className="bar middle"></div>
+            <div className="bar bottom"></div>
           </div>
-        )}
-      </div>
 
-      <div className="header-center">TEW</div>
-
-      <div className="header-right">
-        <div className="cart-icon">
-          🛒
-          {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
+          <div className={`hamburger-menu ${menuOpen ? "open" : ""}`}>
+            <ul>
+              <li onClick={() => handleNavigate("/")}>HOME</li>
+              <li onClick={() => handleNavigate("/", "#shop")}>SHOP</li>
+              <li onClick={() => handleNavigate("/", ".collection-intro")}>
+                ABOUT US
+              </li>
+              <li onClick={() => setShowAccountDropdown(!showAccountDropdown)}>
+                Account
+                {showAccountDropdown && (
+                  <div className="account-dropdown">
+                    <p onClick={() => handleOpenModal("login")}>SIGN IN</p>
+                    <p onClick={() => handleOpenModal("register")}>
+                      REGISTER
+                    </p>
+                  </div>
+                )}
+              </li>
+            </ul>
+          </div>
         </div>
+
+        <div className="header-center">TEW</div>
+
+        <div className="header-right">
+          <div className="cart-icon" onClick={() => navigate("/cart")}>🛒 <span>{cartCount}</span>
       </div>
-    </header>
+        </div>
+      </header>
+    </>
   );
 }

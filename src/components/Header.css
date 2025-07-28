@@ -2,34 +2,96 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: beige;
-  color: black;
-  padding: 1rem 2rem;
+  padding: 18px 24px;
+  background-color: #fff;
   position: relative;
+  z-index: 1000;
+  font-family: 'Courier New', monospace;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.header-left .hamburger {
-  font-size: 24px;
+.hamburger {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   cursor: pointer;
 }
 
-.side-menu {
+.bar {
+  height: 3px;
+  background-color: black;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Animate to X */
+.hamburger.open .top {
+  transform: rotate(45deg) translate(4px, 8px);
+}
+
+.hamburger.open .middle {
+  opacity: 0;
+}
+
+.hamburger.open .bottom {
+  transform: rotate(-45deg) translate(4px, -4px);
+}
+
+
+.hamburger-menu {
   position: absolute;
-  top: 60px;
-  left: 20px;
-  background: black;
-  color: white;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 100;
+  top: 100%; /* below the header */
+  left: 0;
+  width: 100%;
+  background-color: #fdf7f2;
+  padding: 20px;
+  display: none;
+  z-index: 999;
+  border-top: 1px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.hamburger-menu.open {
+  display: block;
+  animation: fadeInDown 0.3s ease-in-out;
+}
+
+.hamburger-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hamburger-menu li {
+  padding: 12px 0;
+  font-size: 16px;
+  cursor: pointer;
+  color: #111;
+  transition: color 0.2s ease;
+}
+
+.hamburger-menu li:hover {
+  color: #d36d6d;
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .header-center {
-  font-size: 24px;
   font-weight: bold;
-  font-family: serif;
+  font-size: 22px;
+  text-align: center;
+  flex-grow: 1;
 }
 
 .cart-icon {
@@ -40,15 +102,14 @@
 
 .cart-count {
   position: absolute;
-  top: -8px;
+  top: -6px;
   right: -10px;
-  background-color: black;
+  background: black;
   color: white;
-  font-size: 12px;
-  padding: 2px 6px;
   border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
 }
-
 .mobile-menu {
   background-color: beige;
   padding: 20px;
@@ -69,4 +130,55 @@
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* Header.css */
+.dropdown-menu {
+  position: absolute;
+  top: 60px; /* or just below your header height */
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  z-index: 999;
+  padding: 20px 0;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.notification-banner {
+  padding: 12px 20px;
+  font-size: 14px;
+  background-color: #fbeee6;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .notification-banner {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
+
+.account-dropdown {
+  position: absolute;
+  top: 140px;
+  left: 30px;
+  background-color: #f9f4f0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 12px 20px;
+  z-index: 999;
+  font-family: 'Cormorant Garamond', serif;
+  text-align: left;
+}
+
+.account-dropdown p {
+  margin: 0;
+  padding: 6px 0;
+  cursor: pointer;
+  color: #222;
+}
+
+.account-dropdown p:hover {
+  color: #a17c5f;
 }

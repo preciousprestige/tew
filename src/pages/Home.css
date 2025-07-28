@@ -1,18 +1,29 @@
-/* Top Notification Bar */
 .top-notification {
-  background-color: #f4e3d7; /* soft blush beige */
-  color: #4b2e2e; /* warm muted brown text */
-  padding: 12px 20px;
-  font-size: 0.9rem;
-  font-family: 'Georgia', serif;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  border-bottom: 1px solid #dec5b1;
+  background-color: #f5e9e0;
+  color: #5a3e36;
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 14px;
+  position: relative;
 }
+
+.top-notification button {
+  position: absolute;
+  right: 15px;
+  top: 5px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .top-notification {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
 
 .close-notification {
   background: none;
