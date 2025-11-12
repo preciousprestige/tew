@@ -1,26 +1,77 @@
+// src/components/AuthModal.jsx
 import React, { useState } from "react";
 import "./AuthModal.css";
 
 export default function AuthModal({ type, onClose }) {
-  const [authType, setAuthType] = useState(type); // "login" or "register"
+  const [authType, setAuthType] = useState(type);
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
     email: "",
-    password: ""
+    password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    // Placeholder for backend call
-    alert(
-      `${authType === "login" ? "Logging in" : "Registering"}:\n` +
-        JSON.stringify(formData, null, 2)
-    );
-    onClose();
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+
+      const url =
+        authType === "login"
+          ? "http://localhost:5000/api/auth/login"
+          : "http://localhost:5000/api/auth/register";
+
+      const payload =
+        authType === "login"
+          ? { email: formData.email, password: formData.password }
+          : {
+              name: formData.fullName,
+              email: formData.email,
+              password: formData.password,
+            };
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.message || "Something went wrong");
+        return;
+      }
+
+      if (authType === "login") {
+        // ✅ Use consistent key names
+        localStorage.setItem("tew-token", data.token);
+        localStorage.setItem("tew-user", JSON.stringify(data.user));
+
+        alert("Login successful ✅");
+
+        setTimeout(() => {
+          if (data.user?.isAdmin) {
+            window.location.href = "/admin";
+          } else {
+            window.location.href = "/home";
+          }
+        }, 300);
+      } else {
+        alert("Registration successful ✅");
+        setAuthType("login");
+      }
+
+      onClose();
+    } catch (err) {
+      console.error("Auth error:", err);
+      alert(err.message || "Server error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleAuthType = () => {
@@ -28,61 +79,73 @@ export default function AuthModal({ type, onClose }) {
   };
 
   return (
-    <div className="auth-modal">
-      <div className="auth-box">
-        <p className="close-btn" onClick={onClose}>
-          ×
-        </p>
+    <>
+      {loading && (
+        <div className="spinner-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
 
-        <h2 className="auth-title">
-          {authType === "login" ? "Sign In" : "Register"}
-        </h2>
+      <div className="auth-modal">
+        <div className="auth-box">
+          <p className="close-btn" onClick={onClose}>
+            ×
+          </p>
 
-        {authType === "register" && (
-          <>
-            <input
-              className="auth-input"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder="Full Name"
-            />
-            <input
-              className="auth-input"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Phone Number"
-            />
-          </>
-        )}
+          <h2 className="auth-title">
+            {authType === "login" ? "Sign In" : "Register"}
+          </h2>
 
-        <input
-          className="auth-input"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email Address"
-        />
-        <input
-          className="auth-input"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Password"
-        />
+          {authType === "register" && (
+            <>
+              <input
+                className="auth-input"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                placeholder="Full Name"
+              />
+              <input
+                className="auth-input"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="Phone Number"
+              />
+            </>
+          )}
 
-        <button className="auth-button" onClick={handleSubmit}>
-          {authType === "login" ? "Login" : "Register"}
-        </button>
+          <input
+            className="auth-input"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email Address"
+          />
+          <input
+            className="auth-input"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+          />
 
-        <p className="switch-text" onClick={toggleAuthType}>
-          {authType === "login"
-            ? "Don’t have an account? Register"
-            : "Already have an account? Sign In"}
-        </p>
+          <button
+            className="auth-button"
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {authType === "login" ? "Login" : "Register"}
+          </button>
+
+          <p className="switch-text" onClick={toggleAuthType}>
+            {authType === "login"
+              ? "Don’t have an account? Register"
+              : "Already have an account? Sign In"}
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

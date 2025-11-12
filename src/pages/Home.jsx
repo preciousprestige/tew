@@ -1,5 +1,6 @@
-// src/Home.jsx
-import React from 'react';
+// src/pages/Home.jsx
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Carousel from '../components/Carousel';
 import ProductGrid from '../components/ProductGrid';
 import ChatWidget from "../components/ChatWidget";
@@ -7,13 +8,18 @@ import '../App.css';
 import './Home.css';
 
 export default function Home() {
-  const handleScrollToProducts = () => {
-    const section = document.getElementById('product-sections');
-    if (section) section.scrollIntoView({ behavior: 'smooth' });
-  };
-  <section id="shop" className="your-shop-section-class">
-  {/* Your shop content here */}
-</section>
+  const location = useLocation();
+
+  // Scroll to section on hash change
+  useEffect(() => {
+    if (location.hash === '#shop') {
+      const section = document.getElementById('product-sections');
+      if (section) section.scrollIntoView({ behavior: 'smooth' });
+    } else if (location.hash === '#about') {
+      const section = document.getElementById('fashion-statement');
+      if (section) section.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [location]);
 
   return (
     <div className="home-page">
@@ -24,33 +30,30 @@ export default function Home() {
         </p>
         <button
           className="close-notification"
-          onClick={() =>
-            document.getElementById('top-notification').remove()
-          }
+          onClick={() => document.getElementById('top-notification').remove()}
         >
           &times;
         </button>
       </div>
 
-      {/* Carousel */}
-      <Carousel />
-      <ChatWidget />
+      {/* Hero Carousel */}
+      <section>
+        <Carousel />
+        <ChatWidget />
+      </section>
 
       {/* Fashion Statement Section */}
-      <div className="fashion-statement">
+      <section id="fashion-statement" className="fashion-statement">
         <h2 className="fashion-heading">About us</h2>
         <p className="fashion-text">
           Each collection is thoughtfully designed to reflect timeless elegance while embracing contemporary trends, ensuring our pieces resonate with the discerning consumer. We strive to empower individuals to express their unique identities through fashion, making every garment a statement of confidence and grace.
         </p>
-        <button className="shop-now-button" onClick={handleScrollToProducts}>
-          Shop Now
-        </button>
-      </div>
+      </section>
 
       {/* Product Grid Section */}
-      <div id="product-sections">
+      <section id="product-sections">
         <ProductGrid />
-      </div>
+      </section>
     </div>
   );
 }

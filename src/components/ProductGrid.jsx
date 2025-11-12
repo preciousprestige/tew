@@ -1,45 +1,82 @@
-import React from 'react';
-import './ProductGrid.css';
-import { useCart } from '../context/CartContext';
-
+import React, { useEffect, useState } from "react";
+import "./ProductGrid.css";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function ProductGrid() {
-  const sections = ['NEW IN', 'BEST SELLERS', 'RTW TEW'];
-  const { addToCart } = useCart();
+  const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fake product data (use until backend is connected)
-  const placeholderProducts = Array.from({ length: 8 }).map((_, i) => ({
-    id: i + 1,
-    name: `Product ${i + 1}`,
-    price: 5000 + i * 1000,
-    discount: i % 2 === 0 ? '10% OFF' : '',
-    image: 'https://via.placeholder.com/200x250', // You can replace this with a local or TEW-style image later
-  }));
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/products");
+        const data = Array.isArray(res.data) ? res.data : [];
+        setProducts(data);
+      } catch (err) {
+        console.error("❌ Failed to load products:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  const handleProductClick = (id) => navigate(`/product/${id}`);
+
+  if (loading)
+    return <p className="text-center" style={{ color: "#a17c4d" }}>Loading products...</p>;
+
+  const grouped = products.reduce((acc, p) => {
+    const cat = p.shopCategory || "GENERAL";
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(p);
+    return acc;
+  }, {});
+
+  const categories = Object.keys(grouped).filter(
+    (key) => grouped[key].length > 0
+  );
 
   return (
     <div className="product-section-wrapper">
-      {sections.map((sectionTitle, sectionIndex) => (
-        <div key={sectionIndex} className="product-section">
+      {categories.map((sectionTitle, index) => (
+        <div key={index} className="product-section">
           <h2 className="section-title">{sectionTitle}</h2>
 
           <div className="horizontal-scroll-wrapper">
             <div className="product-grid">
-              {placeholderProducts.map((product) => (
-                <div key={product.id} className="product-card">
-                  <img src={product.image} alt={product.name} />
-                  <div className="product-info">
-                    <p className="product-name">{product.name}</p>
-                    <p className="product-price">₦{product.price.toLocaleString()}</p>
-                    <p className="product-discount">{product.discount}</p>
-                    <button
-                      className="add-to-cart-btn"
-                      onClick={() => addToCart(product)}
+              {grouped[sectionTitle].map((product) => {
+                const displayImg =
+                  Array.isArray(product.images) && product.images.length
+                    ? product.images[0].startsWith("http")
+                      ? product.images[0]
+                      : `http://localhost:5000${product.images[0]}`
+                    : product.image
+                    ? product.image.startsWith("http")
+                      ? product.image
+                      : `http://localhost:5000${product.image}`
+                    : "https://via.placeholder.com/400x500?text=No+Image";
+
+                return (
+                  <div key={product._id} className="product-card">
+                    <div
+                      className="product-image-container"
+                      onClick={() => handleProductClick(product._id)}
                     >
-                      🛒
-                    </button>
+                      <img
+                        src={displayImg}
+                        alt={product.name}
+                        className="product-img"
+                      />
+                    </div>
+
+                    <p className="product-name">{product.name}</p>
+                    <p className="product-price">₦{product.price?.toLocaleString()}</p>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

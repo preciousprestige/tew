@@ -1,42 +1,46 @@
 .tew-footer {
-   background-color: #f5f5dc; /* beige */
-  color: black;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 2rem;
-  flex-wrap: wrap;
+  padding: 20px;
+  background-color: #f5f5dc;
+  font-family: 'Courier New', monospace;
   font-size: 14px;
+  color: #000;
 }
 
 .footer-left,
 .footer-center,
 .footer-right {
-  flex: 1;
-  text-align: center;
-}
-
-.footer-left {
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .footer-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
+  flex-direction: row;
+  gap: 15px;
 }
 
-.footer-right a:hover {
-  transform: scale(1.1);
-}
-
-.footer-center div:first-child {
-  font-weight: bold;
-}
-
-.socials a {
-  margin: 0 10px;
+.footer-right a svg {
   color: inherit;
-  font-size: 1.5rem;
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.footer-right a:hover svg {
+  transform: scale(1.2);
+}
+
+.footer-right a[href*="instagram"] svg {
+  color: #E1306C;
+}
+
+.footer-right a[href*="wa.me"] svg {
+  color: #25D366;
+}
+
+.footer-right a[href*="mailto"] svg {
+  color: #D44638; 
 }
