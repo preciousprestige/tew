@@ -1,23 +1,20 @@
 {
   "files": {
-    "main.css": "/tew/static/css/main.bb5a07ea.css",
-    "main.js": "/tew/static/js/main.107352ac.js",
-    "static/js/453.bd406512.chunk.js": "/tew/static/js/453.bd406512.chunk.js",
-    "static/media/intro2.jpg": "/tew/static/media/intro2.8fd9d49e253dfca755f2.jpg",
-    "static/media/intro1.jpg": "/tew/static/media/intro1.b8f08188d94b6305b87e.jpg",
-    "static/media/dancing-script-latin-400-normal.woff": "/tew/static/media/dancing-script-latin-400-normal.eb245c6a9672c41e58b5.woff",
-    "static/media/dancing-script-latin-400-normal.woff2": "/tew/static/media/dancing-script-latin-400-normal.b09da0c376bf729a1642.woff2",
-    "static/media/dancing-script-latin-ext-400-normal.woff": "/tew/static/media/dancing-script-latin-ext-400-normal.dc37eb9968e86a5d2ff3.woff",
-    "static/media/dancing-script-latin-ext-400-normal.woff2": "/tew/static/media/dancing-script-latin-ext-400-normal.11d74e43d26287abb252.woff2",
-    "static/media/dancing-script-vietnamese-400-normal.woff": "/tew/static/media/dancing-script-vietnamese-400-normal.2c07c72dd97de0d672af.woff",
-    "static/media/dancing-script-vietnamese-400-normal.woff2": "/tew/static/media/dancing-script-vietnamese-400-normal.608e7b2d4ae6bf473059.woff2",
+    "main.css": "/tew/static/css/main.bcf920c5.css",
+    "main.js": "/tew/static/js/main.97b0eed5.js",
+    "static/js/453.a0bbbed1.chunk.js": "/tew/static/js/453.a0bbbed1.chunk.js",
+    "static/media/intro2.jpg": "/tew/static/media/intro2.b03d8f7960b7ae9a64be.jpg",
+    "static/media/hero2.png": "/tew/static/media/hero2.0bb29d1a1ef3ac6e8101.png",
+    "static/media/intro1.jpg": "/tew/static/media/intro1.8fd9d49e253dfca755f2.jpg",
+    "static/media/hero1.png": "/tew/static/media/hero1.b8f08188d94b6305b87e.png",
+    "static/media/tew-logo.png": "/tew/static/media/tew-logo.aa71ecb5c137d7f1be9f.png",
     "index.html": "/tew/index.html",
-    "main.bb5a07ea.css.map": "/tew/static/css/main.bb5a07ea.css.map",
-    "main.107352ac.js.map": "/tew/static/js/main.107352ac.js.map",
-    "453.bd406512.chunk.js.map": "/tew/static/js/453.bd406512.chunk.js.map"
+    "main.bcf920c5.css.map": "/tew/static/css/main.bcf920c5.css.map",
+    "main.97b0eed5.js.map": "/tew/static/js/main.97b0eed5.js.map",
+    "453.a0bbbed1.chunk.js.map": "/tew/static/js/453.a0bbbed1.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.bb5a07ea.css",
-    "static/js/main.107352ac.js"
+    "static/css/main.bcf920c5.css",
+    "static/js/main.97b0eed5.js"
   ]
 }
