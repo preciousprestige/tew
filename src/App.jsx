@@ -33,11 +33,12 @@ import { CartProvider } from "./context/CartContext"; // ← use correct casing
 
 function Layout() {
   const location = useLocation();
-  const hideLayout =
-    location.pathname.startsWith("/admin") ||
-    location.pathname === "/admin-login" ||
-    location.pathname.startsWith("/forgot-password") ||
-    location.pathname.startsWith("/reset-password");
+const hideLayout =
+  location.pathname === "/" || // ✅ hide header/footer for Welcome only
+  location.pathname.startsWith("/admin") ||
+  location.pathname === "/admin-login" ||
+  location.pathname.startsWith("/forgot-password") ||
+  location.pathname.startsWith("/reset-password");
 
   return (
     <div className="app-container">
