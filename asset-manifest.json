@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/tew/static/css/main.bcf920c5.css",
-    "main.js": "/tew/static/js/main.d2737a18.js",
+    "main.js": "/tew/static/js/main.dcb886ad.js",
     "static/js/453.a0bbbed1.chunk.js": "/tew/static/js/453.a0bbbed1.chunk.js",
     "static/media/intro2.jpg": "/tew/static/media/intro2.b03d8f7960b7ae9a64be.jpg",
     "static/media/hero2.png": "/tew/static/media/hero2.0bb29d1a1ef3ac6e8101.png",
@@ -10,11 +10,11 @@
     "static/media/tew-logo.png": "/tew/static/media/tew-logo.aa71ecb5c137d7f1be9f.png",
     "index.html": "/tew/index.html",
     "main.bcf920c5.css.map": "/tew/static/css/main.bcf920c5.css.map",
-    "main.d2737a18.js.map": "/tew/static/js/main.d2737a18.js.map",
+    "main.dcb886ad.js.map": "/tew/static/js/main.dcb886ad.js.map",
     "453.a0bbbed1.chunk.js.map": "/tew/static/js/453.a0bbbed1.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.bcf920c5.css",
-    "static/js/main.d2737a18.js"
+    "static/js/main.dcb886ad.js"
   ]
 }
