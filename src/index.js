@@ -6,17 +6,17 @@ import { CartProvider } from "./context/CartContext";
 import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 
-// ✅ Create root
+const isGithub = window.location.hostname.includes("github.io");
+const basename = isGithub ? "/tew" : "";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-// ✅ Render App (StrictMode removed to prevent double mounting)
 root.render(
-  <BrowserRouter>
+  <BrowserRouter basename={basename}>
     <CartProvider>
       <App />
     </CartProvider>
   </BrowserRouter>
 );
 
-// ✅ Optional performance reporting
 reportWebVitals();

@@ -29,16 +29,16 @@ import AdminLogin from "./admin/pages/AdminLogin";
 
 // ✅ Contexts
 import { AuthProvider } from "./context/AuthContext";
-import { CartProvider } from "./context/CartContext"; // ← use correct casing
+import { CartProvider } from "./context/CartContext";
 
 function Layout() {
   const location = useLocation();
-const hideLayout =
-  location.pathname === "/" || // ✅ hide header/footer for Welcome only
-  location.pathname.startsWith("/admin") ||
-  location.pathname === "/admin-login" ||
-  location.pathname.startsWith("/forgot-password") ||
-  location.pathname.startsWith("/reset-password");
+  const hideLayout =
+    location.pathname === "/" ||
+    location.pathname.startsWith("/admin") ||
+    location.pathname === "/admin-login" ||
+    location.pathname.startsWith("/forgot-password") ||
+    location.pathname.startsWith("/reset-password");
 
   return (
     <div className="app-container">
@@ -56,7 +56,11 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Routes>
-          {/* ✅ Public Routes */}
+
+          {/* ✅ GitHub Pages fix */}
+          <Route path="/tew" element={<Navigate to="/" replace />} />
+
+          {/* Public Routes */}
           <Route element={<Layout />}>
             <Route path="/" element={<Welcome />} />
             <Route path="/home" element={<Home />} />
@@ -71,7 +75,7 @@ function App() {
             <Route path="/login" element={<Navigate to="/admin-login" replace />} />
           </Route>
 
-          {/* ✅ Admin Routes */}
+          {/* Admin Routes */}
           <Route
             path="/admin"
             element={

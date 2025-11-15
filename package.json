@@ -2,7 +2,7 @@
   "name": "tew",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://preciousprestige.github.io/tew",
+  "homepage": "https://preciousprestige.github.io/tew/",
   "dependencies": {
     "@fontsource/dancing-script": "^5.2.6",
     "@testing-library/dom": "^10.4.0",
