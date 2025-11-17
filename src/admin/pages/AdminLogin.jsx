@@ -10,13 +10,19 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // ✅ SAME backend URL format as apiClient.js
+  const API_URL =
+    (process.env.REACT_APP_API_URL &&
+      process.env.REACT_APP_API_URL.replace(/\/$/, "")) ||
+    "http://localhost:5000";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,16 +34,17 @@ export default function AdminLogin() {
       console.log("Login response:", data);
 
       if (res.ok && data.user?.isAdmin) {
-        // ✅ Store in the same structure Dashboard.jsx expects
+        // Store EXACTLY what apiClient.js expects
         const adminData = {
           token: data.token,
           isAdmin: data.user.isAdmin,
           name: data.user.name,
           email: data.user.email,
         };
+
         localStorage.setItem("tew-user", JSON.stringify(adminData));
 
-        // ✅ small delay to ensure storage completes
+        // Delay ensures storage is complete before redirect
         setTimeout(() => navigate("/admin"), 300);
       } else {
         setError(data.message || "Invalid credentials. Try again.");
