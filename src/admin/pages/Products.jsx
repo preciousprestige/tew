@@ -7,8 +7,10 @@ import {
 } from "../api";
 import { toast } from "react-toastify";
 import Modal from "../components/Modal";
-// 🔧 Fixed casing — ensure your file is named **ProductForm.jsx** (capital P)
+// Ensure file/component name matches
 import ProductForm from "../components/forms/ProductForm";
+
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -18,16 +20,15 @@ export default function Products() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [shopCategories, setShopCategories] = useState([]);
 
-  // 🟤 Load products
   const loadProducts = async () => {
     try {
       setLoading(true);
       const data = await getProducts();
-      setProducts(data);
+      setProducts(data || []);
 
       const uniqueCats = [
         ...new Set(
-          data.map((p) => p.shopCategory).filter((c) => c && c.trim() !== "")
+          (data || []).map((p) => p.shopCategory).filter((c) => c && c.trim() !== "")
         ),
       ];
       setShopCategories(uniqueCats);
@@ -43,28 +44,24 @@ export default function Products() {
     loadProducts();
   }, []);
 
-  // 🟤 Add Product
   const openAddModal = () => {
     setModalMode("add");
     setSelectedProduct(null);
     setIsModalOpen(true);
   };
 
-  // 🟤 Edit Product
   const openEditModal = (product) => {
     setModalMode("edit");
     setSelectedProduct(product);
     setIsModalOpen(true);
   };
 
-  // 🟤 View Product
   const openViewModal = (product) => {
     setModalMode("view");
     setSelectedProduct(product);
     setIsModalOpen(true);
   };
 
-  // 🟤 Save / Update Product
   const handleSubmit = async (formData) => {
     try {
       const data = new FormData();
@@ -92,7 +89,6 @@ export default function Products() {
     }
   };
 
-  // 🟤 Delete
   const handleDelete = async (product) => {
     if (!window.confirm("Delete this product?")) return;
     try {
@@ -136,7 +132,11 @@ export default function Products() {
                   <td>
                     {Array.isArray(p.images) && p.images.length > 0 ? (
                       <img
-                        src={`http://localhost:5000${p.images[0]}`}
+                        src={
+                          p.images[0].startsWith("http")
+                            ? p.images[0]
+                            : `${API_BASE}${p.images[0]}`
+                        }
                         alt={p.name}
                         className="admin-image-preview"
                       />
@@ -209,7 +209,7 @@ export default function Products() {
                 {selectedProduct.images.map((src, i) => (
                   <img
                     key={i}
-                    src={src.startsWith("http") ? src : `http://localhost:5000${src}`}
+                    src={src.startsWith("http") ? src : `${API_BASE}${src}`}
                     alt="preview"
                     className="view-image-preview"
                   />

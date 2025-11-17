@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../../Admin.css";
 
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 export default function Settings() {
   const [oldEmail, setOldEmail] = useState("");
   const [newEmail, setNewEmail] = useState("");
@@ -16,9 +18,10 @@ export default function Settings() {
     setMessage("");
 
     try {
-      const token = localStorage.getItem("token");
+      const storedUser = JSON.parse(localStorage.getItem("tew-user"));
+      const token = storedUser?.token;
       const res = await axios.put(
-        "http://localhost:5000/api/admin/settings",
+        `${API_BASE}/api/admin/settings`,
         { oldEmail, newEmail, oldPassword, newPassword },
         {
           headers: {

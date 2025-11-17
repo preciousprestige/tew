@@ -3,6 +3,8 @@ import { BarChart3 } from "lucide-react";
 import "../../Admin.css";
 import AdminMessages from "./AdminMessages";
 
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 export default function Dashboard() {
   const [admin, setAdmin] = useState(null);
   const [deliveryFee, setDeliveryFee] = useState(0);
@@ -26,12 +28,13 @@ export default function Dashboard() {
 
     const validateToken = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/auth/profile", {
+        const res = await fetch(`${API_BASE}/api/auth/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Invalid or expired token");
         const data = await res.json();
-        setAdmin(data);
+        // profile endpoint may return user or { user }
+        setAdmin(data.user || data);
       } catch (err) {
         console.error("Token validation failed:", err.message);
         logout();
@@ -40,11 +43,12 @@ export default function Dashboard() {
 
     validateToken();
     loadDeliverySettings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [logout]);
 
   const loadDeliverySettings = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/settings");
+      const res = await fetch(`${API_BASE}/api/settings`);
       const data = await res.json();
       if (data) {
         setDeliveryFee(data.deliveryFee || 0);
@@ -72,7 +76,7 @@ export default function Dashboard() {
     try {
       const storedUser = JSON.parse(localStorage.getItem("tew-user"));
       const token = storedUser?.token;
-      const res = await fetch("http://localhost:5000/api/settings", {
+      const res = await fetch(`${API_BASE}/api/settings`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -80,8 +84,13 @@ export default function Dashboard() {
         },
         body: JSON.stringify({ deliveryFee, locations }),
       });
-      if (res.ok) setMessage("✅ Delivery settings updated successfully!");
-      else throw new Error("Failed to update settings");
+
+      if (res.ok) {
+        setMessage("✅ Delivery settings updated successfully!");
+      } else {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to update settings");
+      }
     } catch (err) {
       console.error(err);
       setMessage("❌ Could not save delivery settings");
@@ -138,7 +147,9 @@ export default function Dashboard() {
                 marginBottom: "8px",
               }}
             >
-              <span>{loc.name} — ₦{loc.fee}</span>
+              <span>
+                {loc.name} — ₦{loc.fee}
+              </span>
               <button
                 type="button"
                 onClick={() => handleRemoveLocation(idx)}

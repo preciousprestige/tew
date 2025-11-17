@@ -14,8 +14,8 @@ export default function Orders() {
     try {
       setLoading(true);
       const data = await getOrders();
-      setOrders(data);
-    } catch {
+      setOrders(data || []);
+    } catch (err) {
       toast.error("Failed to load orders");
     } finally {
       setLoading(false);
@@ -42,7 +42,7 @@ export default function Orders() {
       if (!selectedOrder) return;
       await updateOrder(selectedOrder._id, { status: statusUpdate });
       toast.success("✅ Order status updated!");
-      loadOrders();
+      await loadOrders();
       closePopup();
     } catch {
       toast.error("Failed to update status");
@@ -56,7 +56,6 @@ export default function Orders() {
     { key: "status", label: "Status", className: "w-32 capitalize" },
   ];
 
-  // Split orders by status
   const activeOrders = orders.filter(
     (o) => o.status === "pending" || o.status === "processing"
   );
@@ -74,43 +73,33 @@ export default function Orders() {
         <p className="text-center text-[#a17c4d]">Loading...</p>
       ) : (
         <div className="admin-table-container space-y-10">
-          {/* ACTIVE ORDERS TABLE */}
+          {/* ACTIVE ORDERS */}
           <div>
             <h2 className="text-xl font-semibold text-[#a17c4d] mb-2">
               🟡 Pending / Processing Orders
             </h2>
             {activeOrders.length > 0 ? (
-              <Table
-                columns={columns}
-                data={activeOrders}
-                onView={openOrderPopup}
-              />
+              <Table columns={columns} data={activeOrders} onView={openOrderPopup} />
             ) : (
               <p className="text-center text-gray-500">No active orders</p>
             )}
           </div>
 
-          {/* COMPLETED/CANCELLED TABLE */}
+          {/* COMPLETED / CANCELLED */}
           <div>
             <h2 className="text-xl font-semibold text-[#a17c4d] mb-2">
               ✅ Completed / Cancelled Orders
             </h2>
             {completedOrders.length > 0 ? (
-              <Table
-                columns={columns}
-                data={completedOrders}
-                onView={openOrderPopup}
-              />
+              <Table columns={columns} data={completedOrders} onView={openOrderPopup} />
             ) : (
-              <p className="text-center text-gray-500">
-                No completed or cancelled orders
-              </p>
+              <p className="text-center text-gray-500">No completed or cancelled orders</p>
             )}
           </div>
         </div>
       )}
 
-      {/* POPUP DETAILS */}
+      {/* POPUP */}
       {showPopup && selectedOrder && (
         <div
           style={{
@@ -145,25 +134,26 @@ export default function Orders() {
               Order Details
             </h2>
 
-            <p><strong>Customer:</strong> {selectedOrder.paymentResult?.name}</p>
+            <p>
+              <strong>Customer:</strong> {selectedOrder.paymentResult?.name}
+            </p>
             <p>
               <strong>Contact:</strong> {selectedOrder.paymentResult?.phone} |{" "}
               {selectedOrder.paymentResult?.email}
             </p>
             <p>
-              <strong>Address:</strong>{" "}
-              {selectedOrder.shippingAddress?.address},{" "}
+              <strong>Address:</strong> {selectedOrder.shippingAddress?.address},{" "}
               {selectedOrder.shippingAddress?.city},{" "}
               {selectedOrder.shippingAddress?.state}
             </p>
-            <p><strong>Total:</strong> ₦{selectedOrder.totalPrice}</p>
-            <p><strong>Delivery Fee:</strong> ₦{selectedOrder.deliveryFee}</p>
             <p>
-              <strong>Status:</strong>{" "}
-              <span style={{ textTransform: "capitalize" }}>{selectedOrder.status}</span>
+              <strong>Total:</strong> ₦{selectedOrder.totalPrice}
+            </p>
+            <p>
+              <strong>Delivery Fee:</strong> ₦{selectedOrder.deliveryFee}
             </p>
 
-            {/* STATUS UPDATE */}
+            {/* Status */}
             <div style={{ marginTop: "15px" }}>
               <label
                 htmlFor="status"
@@ -171,6 +161,7 @@ export default function Orders() {
               >
                 Update Status:
               </label>
+
               <select
                 id="status"
                 value={statusUpdate}
@@ -180,7 +171,6 @@ export default function Orders() {
                   borderRadius: "5px",
                   border: "1px solid #ccc",
                   width: "100%",
-                  marginBottom: "10px",
                 }}
               >
                 <option value="pending">Pending</option>
@@ -198,39 +188,44 @@ export default function Orders() {
                   padding: "8px 14px",
                   borderRadius: "5px",
                   cursor: "pointer",
+                  marginTop: "10px",
                 }}
               >
-                Mark as {statusUpdate}
+                Save Status
               </button>
             </div>
 
-            <div style={{ marginTop: "20px", borderTop: "1px solid #ddd", paddingTop: "10px" }}>
-              <h4 style={{ color: "#a17c4d", marginBottom: "10px" }}>Ordered Items</h4>
+            {/* ITEMS */}
+            <div style={{ marginTop: "20px" }}>
+              <h4 style={{ color: "#a17c4d", marginBottom: "10px" }}>
+                Ordered Items
+              </h4>
+
               {selectedOrder.items?.map((item, i) => {
-                const imageSrc =
-                  item.image?.startsWith("http")
-                    ? item.image
-                    : item.image
-                    ? `http://localhost:5000${item.image}`
-                    : Array.isArray(item.images) && item.images[0]
-                    ? (item.images[0].startsWith("http")
-                        ? item.images[0]
-                        : `http://localhost:5000${item.images[0]}`)
-                    : "https://via.placeholder.com/100x120?text=No+Image";
+                const API_BASE =
+                  process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+                const imageSrc = item.image?.startsWith("http")
+                  ? item.image
+                  : item.image
+                  ? `${API_BASE}${item.image}`
+                  : Array.isArray(item.images) && item.images[0]
+                  ? item.images[0].startsWith("http")
+                    ? item.images[0]
+                    : `${API_BASE}${item.images[0]}`
+                  : "https://via.placeholder.com/100x120?text=No+Image";
 
                 return (
                   <div
                     key={i}
                     style={{
                       display: "flex",
-                      alignItems: "center",
                       justifyContent: "space-between",
-                      marginBottom: "8px",
                       padding: "6px 0",
                       borderBottom: "1px solid #eee",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <div style={{ display: "flex", gap: "10px" }}>
                       <img
                         src={imageSrc}
                         alt={item.name}
@@ -239,7 +234,6 @@ export default function Orders() {
                         style={{
                           borderRadius: "6px",
                           objectFit: "cover",
-                          marginRight: "10px",
                         }}
                       />
                       <div>
@@ -247,6 +241,7 @@ export default function Orders() {
                         <p>Qty: {item.qty}</p>
                       </div>
                     </div>
+
                     <p>₦{item.price}</p>
                   </div>
                 );
@@ -259,10 +254,8 @@ export default function Orders() {
                 style={{
                   background: "#a17c4d",
                   color: "#fff",
-                  border: "none",
                   padding: "8px 14px",
                   borderRadius: "5px",
-                  cursor: "pointer",
                 }}
               >
                 Close
