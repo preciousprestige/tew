@@ -47,9 +47,14 @@ export default function AuthModal({ type, onClose }) {
       }
 
       if (authType === "login") {
-        // ✅ Use consistent key names
-        localStorage.setItem("tew-token", data.token);
-        localStorage.setItem("tew-user", JSON.stringify(data.user));
+        // ✅ FIXED: Store token INSIDE tew-user (admin expects this)
+        localStorage.setItem(
+          "tew-user",
+          JSON.stringify({
+            ...data.user,
+            token: data.token,
+          })
+        );
 
         alert("Login successful ✅");
 

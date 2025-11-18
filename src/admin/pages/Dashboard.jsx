@@ -33,7 +33,6 @@ export default function Dashboard() {
         });
         if (!res.ok) throw new Error("Invalid or expired token");
         const data = await res.json();
-        // profile endpoint may return user or { user }
         setAdmin(data.user || data);
       } catch (err) {
         console.error("Token validation failed:", err.message);
@@ -43,7 +42,6 @@ export default function Dashboard() {
 
     validateToken();
     loadDeliverySettings();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [logout]);
 
   const loadDeliverySettings = async () => {
@@ -105,7 +103,6 @@ export default function Dashboard() {
         Welcome, {admin.name || "Exquisite Admin"}
       </h1>
 
-      {/* ✅ Admin Chat Box Section (container added) */}
       <div
         style={{
           border: "1px solid #e0d6c5",
@@ -121,7 +118,6 @@ export default function Dashboard() {
         <AdminMessages />
       </div>
 
-      {/* --- Delivery Fee Section --- */}
       <div className="admin-settings-form" style={{ marginBottom: "50px" }}>
         <h3 style={{ marginBottom: "15px", color: "#a17c4d" }}>Delivery Fee Settings</h3>
 
@@ -215,7 +211,6 @@ export default function Dashboard() {
         {message && <p style={{ marginTop: "10px" }}>{message}</p>}
       </div>
 
-      {/* --- Analytics Box --- */}
       <div className="analytics-box" style={{ marginBottom: "50px" }}>
         <div className="card-header">
           <BarChart3 size={28} />
