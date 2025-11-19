@@ -82,6 +82,12 @@ export const deleteUser = async (id) => {
   return res.data;
 };
 
+export const registerUser = async (data) => {
+  const res = await API.post("/auth/register", data);
+  return res.data;
+};
+
+
 // ---------- MESSAGES ----------
 export const getMessages = async () => {
   const res = await API.get("/messages");
