@@ -1,5 +1,24 @@
-// src/admin/api.js
+// src/admin/utils/api.js
 import API from "./utils/apiClient";
+
+// ---------- AUTH ----------
+export const loginUser = async (data) => {
+  const res = await API.post("/auth/login", data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return res.data;
+};
+
+export const registerUser = async (data) => {
+  const res = await API.post("/auth/register", data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return res.data;
+};
 
 // ---------- PRODUCTS ----------
 export const getProducts = async () => {
@@ -81,12 +100,6 @@ export const deleteUser = async (id) => {
   const res = await API.delete(`/users/${id}`);
   return res.data;
 };
-
-export const registerUser = async (data) => {
-  const res = await API.post("/auth/register", data);
-  return res.data;
-};
-
 
 // ---------- MESSAGES ----------
 export const getMessages = async () => {
