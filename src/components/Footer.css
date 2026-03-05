@@ -1,46 +1,14 @@
-.tew-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background-color: #f5f5dc;
-  font-family: 'Courier New', monospace;
-  font-size: 14px;
-  color: #000;
-}
-
-.footer-left,
-.footer-center,
-.footer-right {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.footer-right {
-  flex-direction: row;
-  gap: 15px;
-}
-
-.footer-right a svg {
-  color: inherit;
-  width: 20px;
-  height: 20px;
-  transition: transform 0.3s ease;
-}
-
-.footer-right a:hover svg {
-  transform: scale(1.2);
-}
-
-.footer-right a[href*="instagram"] svg {
-  color: #E1306C;
-}
-
-.footer-right a[href*="wa.me"] svg {
-  color: #25D366;
-}
-
-.footer-right a[href*="mailto"] svg {
-  color: #D44638; 
-}
+.footer { background: #1a1a1a; color: #ccc; padding: 3rem 1.5rem 1.5rem; margin-top: auto; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+.footer-logo { font-family: Georgia, serif; font-size: 1.4rem; letter-spacing: 4px; color: #fff; display: block; margin-bottom: 4px; }
+.footer-brand p { font-size: 0.8rem; color: #999; margin: 0; }
+.footer-section h4 { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: #fff; margin-bottom: 1rem; }
+.footer-links { display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-links a { color: #ccc; text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+.footer-links a:hover { color: #c9a96e; }
+.footer-socials { display: flex; flex-direction: column; gap: 0.7rem; }
+.social-link { display: flex; align-items: center; gap: 0.7rem; color: #ccc; text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+.social-link:hover { color: #c9a96e; }
+.social-icon { width: 18px; height: 18px; flex-shrink: 0; }
+.footer-copy { font-size: 0.75rem; color: #666; margin: 0; text-align: center; padding-top: 1.5rem; border-top: 1px solid #333; max-width: 1200px; margin: 0 auto; }
+@media (max-width: 768px) { .footer-inner { grid-template-columns: 1fr; gap: 1.5rem; } }

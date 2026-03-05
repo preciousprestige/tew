@@ -1,21 +1,16 @@
-import {
-  Routes,
-  Route,
-  useLocation,
-  Navigate,
-  Outlet,
-} from "react-router-dom";
-
-import Welcome from "./Welcome";
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import NotificationBar from "./components/NotificationBar";
+import Welcome from "./Welcome";
 import Home from "./pages/Home";
-import CartPage from "./components/CartPage";
 import ProductDetails from "./pages/ProductDetails";
+import CartPage from "./components/CartPage";
 import Checkout from "./components/Checkout";
-
-// Admin pages
-import AdminDashboard from "./admin/pages/Dashboard";
+import LayoutAdmin from "./admin/components/Layout";
+import Dashboard from "./admin/pages/Dashboard";
 import Products from "./admin/pages/Products";
 import Orders from "./admin/pages/Orders";
 import Users from "./admin/pages/Users";
@@ -23,65 +18,39 @@ import Analytics from "./admin/pages/Analytics";
 import Settings from "./admin/pages/Settings";
 import ForgotPassword from "./admin/pages/ForgotPassword";
 import ResetPassword from "./admin/pages/ResetPassword";
-import LayoutAdmin from "./admin/components/Layout";
 
-// Contexts
-import { AuthProvider } from "./context/AuthContext";
-import { CartProvider } from "./context/CartContext";
-
-function Layout() {
-  const location = useLocation();
-  const hideLayout =
-    location.pathname === "/" ||
-    location.pathname.startsWith("/admin") ||
-    location.pathname.startsWith("/forgot-password") ||
-    location.pathname.startsWith("/reset-password");
-
+function ShopLayout({ children }) {
   return (
-    <div className="app-container">
-      {!hideLayout && <Header />}
-      <main className="main-content">
-        <Outlet />
-      </main>
-      {!hideLayout && <Footer />}
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <NotificationBar />
+      <Header />
+      <main style={{ flex: 1 }}>{children}</main>
+      <Footer />
     </div>
   );
 }
 
-function App() {
+export default function App() {
   return (
     <AuthProvider>
-      <CartProvider>
-        <Routes>
-
-          {/* GitHub Pages Fix */}
-          <Route path="/tew" element={<Navigate to="/" replace />} />
-
-          {/* Public Routes */}
-          <Route element={<Layout />}>
-            <Route path="/" element={<Welcome />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/cart" element={<CartPage />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password/:token" element={<ResetPassword />} />
-          </Route>
-
-          {/* ADMIN (no login, auto-load dashboard) */}
-          <Route path="/admin" element={<LayoutAdmin />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="products" element={<Products />} />
-            <Route path="orders" element={<Orders />} />
-            <Route path="users" element={<Users />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
-
-        </Routes>
-      </CartProvider>
+      <Routes>
+        <Route path="/" element={<Welcome />} />
+        <Route path="/home" element={<ShopLayout><Home /></ShopLayout>} />
+        <Route path="/product/:id" element={<ShopLayout><ProductDetails /></ShopLayout>} />
+        <Route path="/cart" element={<ShopLayout><CartPage /></ShopLayout>} />
+        <Route path="/checkout" element={<ShopLayout><Checkout /></ShopLayout>} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/admin" element={<LayoutAdmin />}>
+          <Route index element={<Dashboard />} />
+          <Route path="products" element={<Products />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="users" element={<Users />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
     </AuthProvider>
   );
 }
-
-export default App;

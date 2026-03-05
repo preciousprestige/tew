@@ -1,88 +1,37 @@
 import React, { useState } from "react";
-import "./Header.css";
+import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 import AuthModal from "./AuthModal";
-import { useNavigate } from "react-router-dom";
 import logo from "../assets/tew-logo.png";
-
-export default function Header({ cartCount }) {
+import "./Header.css";
+export default function Header() {
+  const { cartCount } = useCart();
+  const { user, logout } = useAuth();
+  const [showAuth, setShowAuth] = useState(false);
+  const [authType, setAuthType] = useState("login");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [showAccountDropdown, setShowAccountDropdown] = useState(false);
-  const [authModalType, setAuthModalType] = useState(null);
-
-  const navigate = useNavigate();
-
-  // Smooth scroll within same page
-  const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-      setMenuOpen(false);
-    } else {
-      // if not found (like when user is not on /home), navigate first then scroll
-      navigate("/home");
-      setTimeout(() => {
-        const elRetry = document.getElementById(id);
-        if (elRetry) elRetry.scrollIntoView({ behavior: "smooth" });
-      }, 300);
-    }
-  };
-
-  // Handle route navigation
-  const handleNavigate = (path) => {
-    setMenuOpen(false);
-    navigate(path);
-  };
-
-  const handleOpenModal = (type) => {
-    setAuthModalType(type);
-    setShowAccountDropdown(false);
-  };
-
   return (
     <>
-      {authModalType && (
-        <AuthModal type={authModalType} onClose={() => setAuthModalType(null)} />
-      )}
-
-      <header className="tew-header">
-        <div className="header-left">
-          <div
-            className={`hamburger ${menuOpen ? "open" : ""}`}
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            <div className="bar top"></div>
-            <div className="bar middle"></div>
-            <div className="bar bottom"></div>
-          </div>
-
-          <div className={`hamburger-menu ${menuOpen ? "open" : ""}`}>
-            <ul>
-              <li onClick={() => handleNavigate("/")}>HOME</li>
-              <li onClick={() => scrollToSection("product-sections")}>SHOP</li>
-              <li onClick={() => scrollToSection("fashion-statement")}>ABOUT US</li>
-              <li onClick={() => setShowAccountDropdown(!showAccountDropdown)}>
-                Account
-                {showAccountDropdown && (
-                  <div className="account-dropdown">
-                    <p onClick={() => handleOpenModal("login")}>SIGN IN</p>
-                    <p onClick={() => handleOpenModal("register")}>REGISTER</p>
-                  </div>
-                )}
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="header-center">
-          <img src={logo} alt="TEW Logo" className="tew-logo" />
-        </div>
-
-        <div className="header-right">
-          <div className="cart-icon" onClick={() => handleNavigate("/cart")}>
-            🛒 <span>{cartCount}</span>
-          </div>
+      <header className="header">
+        <div className="header-inner">
+          <Link to="/home"><img src={logo} alt="TEW" className="header-logo-img" /></Link>
+          <nav className={"nav-links" + (menuOpen ? " open" : "")}>
+            <Link to="/home" onClick={() => setMenuOpen(false)}>Shop</Link>
+            <Link to="/cart" onClick={() => setMenuOpen(false)}>Cart {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}</Link>
+            {user ? (
+              <button className="nav-btn" onClick={() => { logout(); setMenuOpen(false); }}>Logout</button>
+            ) : (
+              <>
+                <button className="nav-btn" onClick={() => { setAuthType("login"); setShowAuth(true); }}>Sign In</button>
+                <button className="nav-btn nav-btn-filled" onClick={() => { setAuthType("register"); setShowAuth(true); }}>Register</button>
+              </>
+            )}
+          </nav>
+          <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}><span /><span /><span /></button>
         </div>
       </header>
+      {showAuth && <AuthModal type={authType} onClose={() => setShowAuth(false)} />}
     </>
   );
 }

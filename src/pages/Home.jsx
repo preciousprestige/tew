@@ -1,59 +1,60 @@
-// src/pages/Home.jsx
-import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import Carousel from '../components/Carousel';
-import ProductGrid from '../components/ProductGrid';
-import ChatWidget from "../components/ChatWidget";
-import '../App.css';
-import './Home.css';
-
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import "./Home.css";
+import { imgUrl } from "../utils/imgUrl";
+const API = process.env.REACT_APP_API_URL;
 export default function Home() {
-  const location = useLocation();
-
-  // Scroll to section on hash change
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [category, setCategory] = useState("All");
+  const [search, setSearch] = useState("");
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
   useEffect(() => {
-    if (location.hash === '#shop') {
-      const section = document.getElementById('product-sections');
-      if (section) section.scrollIntoView({ behavior: 'smooth' });
-    } else if (location.hash === '#about') {
-      const section = document.getElementById('fashion-statement');
-      if (section) section.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [location]);
-
+    fetch(API + "/products")
+      .then((r) => r.json())
+      .then((data) => setProducts(Array.isArray(data) ? data : data.products || []))
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false));
+  }, []);
+  const categories = ["All", ...new Set(products.map((p) => p.category).filter(Boolean))];
+  const filtered = products.filter((p) => {
+    const matchCat = category === "All" || p.category === category;
+    const matchSearch = p.name ? p.name.toLowerCase().includes(search.toLowerCase()) : true;
+    return matchCat && matchSearch;
+  });
   return (
-    <div className="home-page">
-      {/* Notification Banner */}
-      <div className="top-notification" id="top-notification">
-        <p>
-          *orders take 3-5 working days. NB for custom measurements at the checkpoint. shop for international checkouts at the contact options.*
-        </p>
-        <button
-          className="close-notification"
-          onClick={() => document.getElementById('top-notification').remove()}
-        >
-          &times;
-        </button>
+    <div className="home">
+      <div className="home-filters">
+        <input className="search-input" placeholder="Search products..." value={search} onChange={(e) => setSearch(e.target.value)} />
+        <div className="category-tabs">
+          {categories.map((cat) => (
+            <button key={cat} className={"cat-tab" + (category === cat ? " active" : "")} onClick={() => setCategory(cat)}>{cat}</button>
+          ))}
+        </div>
       </div>
-
-      {/* Hero Carousel */}
-      <section>
-        <Carousel />
-        <ChatWidget />
-      </section>
-
-      {/* Fashion Statement Section */}
-      <section id="fashion-statement" className="fashion-statement">
-        <h2 className="fashion-heading">About us</h2>
-        <p className="fashion-text">
-          Each collection is thoughtfully designed to reflect timeless elegance while embracing contemporary trends, ensuring our pieces resonate with the discerning consumer. We strive to empower individuals to express their unique identities through fashion, making every garment a statement of confidence and grace.
-        </p>
-      </section>
-
-      {/* Product Grid Section */}
-      <section id="product-sections">
-        <ProductGrid />
-      </section>
+      {loading ? (
+        <div className="loading-grid">{[...Array(8)].map((_, i) => <div key={i} className="skeleton-card" />)}</div>
+      ) : filtered.length === 0 ? (
+        <div className="empty-state">No products found.</div>
+      ) : (
+        <div className="product-grid">
+          {filtered.map((product) => (
+            <div key={product._id} className="product-card">
+              <div className="product-img-wrap" onClick={() => navigate("/product/" + product._id)}>
+                <img src={imgUrl(product.images && product.images[0] ? product.images[0] : product.image || product.imageUrl)} alt={product.name} className="product-img" />
+                {product.countInStock === 0 && <span className="out-of-stock">Out of Stock</span>}
+              </div>
+              <div className="product-info">
+                <p className="product-name" onClick={() => navigate("/product/" + product._id)}>{product.name}</p>
+                <p className="product-price">NGN {Number(product.price).toLocaleString()}</p>
+                <button className="add-to-cart-btn" disabled={product.countInStock === 0} onClick={() => addToCart(product)}>Add to Cart</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,65 +1,36 @@
-.welcome-hero {
-  height: 100vh;
-  width: 100%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-image 0.8s ease-in-out;
-}
-
-/* Full coverage on all devices */
-@media screen and (min-width: 1024px) {
-  .welcome-hero {
-    background-size: cover;
-    background-position: center;
-    background-color: #fff;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .welcome-hero {
-    background-size: cover;
-    background-position: center;
-  }
-}
-
-.hero-overlay {
-  text-align: center;
-  color: white;
-  padding: 2rem;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.4);
-}
-
-.hero-subheading {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-.hero-heading {
-  font-size: 3rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-}
-
-.hero-btn {
-  font-size: 1rem;
-  padding: 0.75rem 2rem;
-  border: none;
-  background-color: white;
-  color: black;
-  cursor: pointer;
-  border-radius: 30px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.hero-btn:hover {
-  background-color: black;
-  color: white;
+.welcome { min-height: 100vh; background: #faf7f4; font-family: Georgia, serif; }
+.welcome-nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 3rem; border-bottom: 1px solid #e8e0d8; background: #fff; }
+.welcome-logo-img { height: 48px; object-fit: contain; }
+.welcome-nav-links { display: flex; gap: 1rem; }
+.welcome-nav-links button { padding: 8px 20px; border: 1px solid #1a1a1a; background: none; font-size: 0.82rem; letter-spacing: 1.5px; cursor: pointer; font-family: sans-serif; transition: all 0.2s; }
+.welcome-nav-links button:hover, .welcome-nav-links button.filled { background: #1a1a1a; color: #fff; }
+.hero { display: grid; grid-template-columns: 1fr 1fr; min-height: calc(100vh - 65px); max-width: 1400px; margin: 0 auto; padding: 0 3rem; align-items: center; gap: 4rem; }
+.hero-tag { font-family: sans-serif; font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: #c9a96e; margin-bottom: 1rem; }
+.hero-title { font-size: 4rem; line-height: 1.1; color: #1a1a1a; margin-bottom: 1.5rem; font-weight: 400; }
+.hero-sub { font-family: sans-serif; font-size: 0.95rem; line-height: 1.7; color: #666; max-width: 420px; margin-bottom: 2.5rem; }
+.hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+.cta-primary { padding: 14px 32px; background: #1a1a1a; color: #fff; border: none; font-size: 0.82rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; font-family: sans-serif; transition: background 0.25s; }
+.cta-primary:hover { background: #c9a96e; }
+.cta-secondary { padding: 14px 32px; background: none; color: #1a1a1a; border: 1px solid #1a1a1a; font-size: 0.82rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; font-family: sans-serif; transition: all 0.25s; }
+.cta-secondary:hover { background: #1a1a1a; color: #fff; }
+.hero-images { position: relative; height: 580px; }
+.hero-img-1 { position: absolute; width: 65%; height: 80%; top: 0; right: 0; object-fit: cover; border-radius: 2px; }
+.hero-img-2 { position: absolute; width: 50%; height: 55%; bottom: 0; left: 0; object-fit: cover; border: 6px solid #faf7f4; border-radius: 2px; }
+.intro-section { padding: 4rem 3rem; background: #fff; }
+.intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 1200px; margin: 0 auto; }
+.intro-img { width: 100%; height: 500px; object-fit: cover; border-radius: 2px; }
+.welcome-features { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #e8e0d8; background: #faf7f4; }
+.feature-item { padding: 2.5rem 3rem; border-right: 1px solid #e8e0d8; text-align: center; }
+.feature-item:last-child { border-right: none; }
+.feature-item h3 { font-size: 0.95rem; letter-spacing: 2px; margin-bottom: 0.5rem; color: #1a1a1a; text-transform: uppercase; }
+.feature-item p { font-family: sans-serif; font-size: 0.82rem; color: #888; line-height: 1.6; margin: 0; }
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding: 2rem 1.5rem; min-height: auto; gap: 2rem; }
+  .hero-images { height: 320px; }
+  .intro-section { padding: 2rem 1.5rem; }
+  .intro-grid { grid-template-columns: 1fr; }
+  .intro-img { height: 300px; }
+  .welcome-features { grid-template-columns: 1fr; }
+  .feature-item { border-right: none; border-bottom: 1px solid #e8e0d8; }
+  .welcome-nav { padding: 1rem 1.5rem; }
 }

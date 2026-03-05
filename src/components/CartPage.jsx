@@ -1,90 +1,51 @@
-// src/components/CartPage.jsx
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import "./CartPage.css";
-import { useNavigate } from "react-router-dom";
-
+import { imgUrl } from "../utils/imgUrl";
 export default function CartPage() {
-  const { cartItems, updateQuantity, removeFromCart } = useCart();
-  const [address, setAddress] = useState("");
+  const { cartItems, removeFromCart, updateQuantity, cartTotal } = useCart();
   const navigate = useNavigate();
-
-  const subtotal = cartItems.reduce(
-    (acc, item) => acc + (item.price || 0) * (item.quantity || 1),
-    0
-  );
-
+  if (cartItems.length === 0) {
+    return (
+      <div className="cart-empty">
+        <h2>Your cart is empty</h2>
+        <p>Add some items to get started.</p>
+        <button onClick={() => navigate("/home")}>Continue Shopping</button>
+      </div>
+    );
+  }
   return (
     <div className="cart-page">
-      <h2>Your Cart</h2>
-
-      {cartItems.length === 0 ? (
-        <p>Your cart is empty</p>
-      ) : (
-        <>
-          <div className="cart-list">
-            {cartItems.map((item) => {
-              const id = item._id || item.id;
-              const displayImg =
-                Array.isArray(item.images) && item.images.length
-                  ? item.images[0].startsWith("http")
-                    ? item.images[0]
-                    : `http://localhost:5000${item.images[0]}`
-                  : item.image
-                  ? item.image.startsWith("http")
-                    ? item.image
-                    : `http://localhost:5000${item.image}`
-                  : "https://via.placeholder.com/100x120?text=No+Image";
-
-              return (
-                <div key={id} className="cart-item">
-                  <img
-                    src={displayImg}
-                    alt={item.name}
-                    style={{ width: "80px", height: "100px", objectFit: "cover" }}
-                  />
-                  <div>
-                    <p>{item.name}</p>
-                    <p>₦{item.price}</p>
-                    <div className="qty-controls">
-                      <button
-                        onClick={() => updateQuantity(id, -1)}
-                        disabled={item.quantity <= 1}
-                      >
-                        -
-                      </button>
-                      <span>{item.quantity}</span>
-                      <button onClick={() => updateQuantity(id, 1)}>+</button>
-                    </div>
-                    <button
-                      className="remove-btn"
-                      onClick={() => removeFromCart(id)}
-                    >
-                      Remove
-                    </button>
-                  </div>
+      <h1 className="cart-title">Your Cart</h1>
+      <div className="cart-inner">
+        <div className="cart-items">
+          {cartItems.map((item) => (
+            <div key={item._id + item.size} className="cart-item">
+              <img src={imgUrl(item.images && item.images[0] ? item.images[0] : item.image || item.imageUrl)} alt={item.name} className="cart-item-img" />
+              <div className="cart-item-details">
+                <p className="cart-item-name">{item.name}</p>
+                {item.size && <p className="cart-item-size">Size: {item.size}</p>}
+                <p className="cart-item-price">NGN {Number(item.price).toLocaleString()}</p>
+                <div className="cart-qty">
+                  <button onClick={() => updateQuantity(item._id, item.size, item.quantity - 1)}>-</button>
+                  <span>{item.quantity}</span>
+                  <button onClick={() => updateQuantity(item._id, item.size, item.quantity + 1)}>+</button>
                 </div>
-              );
-            })}
-          </div>
-
-          <div className="checkout-section">
-            <p>Subtotal: ₦{subtotal}</p>
-            <input
-              type="text"
-              placeholder="Enter delivery address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-            <button
-              className="checkout-btn"
-              onClick={() => navigate("/checkout")}
-            >
-              Proceed to Checkout
-            </button>
-          </div>
-        </>
-      )}
+              </div>
+              <button className="cart-remove" onClick={() => removeFromCart(item._id, item.size)}>x</button>
+            </div>
+          ))}
+        </div>
+        <div className="cart-summary">
+          <h3>Order Summary</h3>
+          <div className="summary-row"><span>Subtotal</span><span>NGN {cartTotal.toLocaleString()}</span></div>
+          <div className="summary-row"><span>Shipping</span><span>Calculated at checkout</span></div>
+          <div className="summary-row total"><span>Total</span><span>NGN {cartTotal.toLocaleString()}</span></div>
+          <button className="checkout-btn" onClick={() => navigate("/checkout")}>Proceed to Checkout</button>
+          <button className="continue-btn" onClick={() => navigate("/home")}>Continue Shopping</button>
+        </div>
+      </div>
     </div>
   );
 }

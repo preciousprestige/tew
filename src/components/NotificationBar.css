@@ -1,0 +1,27 @@
+.notif-bar {
+  background: #1a1a1a;
+  color: #f0e6d3;
+  text-align: center;
+  padding: 10px 3rem;
+  font-size: 0.78rem;
+  letter-spacing: 1.5px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.notif-text { flex: 1; line-height: 1.5; }
+.notif-text span { color: #c9a96e; font-weight: 600; }
+.notif-close {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0 0 0 1rem;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+.notif-close:hover { color: #fff; }

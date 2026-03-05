@@ -1,37 +1,33 @@
 import React, { useState } from "react";
-import axios from "axios";
-
+import { Link } from "react-router-dom";
+import "./Auth.css";
+const API = process.env.REACT_APP_API_URL;
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
+  const handleSubmit = async () => {
+    if (!email) return;
     try {
-      const res = await axios.post("http://localhost:5000/api/admin/forgot", { email });
-      setMessage(res.data.message);
-    } catch (err) {
-      setMessage(err.response?.data?.message || "❌ Failed to send reset link");
-    } finally {
-      setLoading(false);
-    }
+      setLoading(true);
+      const res = await fetch(API + "/auth/forgot-password", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
+      if (res.ok) setSent(true); else alert("Email not found.");
+    } catch { alert("Something went wrong."); }
+    finally { setLoading(false); }
   };
-
   return (
-    <div className="settings-container">
-      <h2 className="settings-title">Forgot Password</h2>
-      <form onSubmit={handleSubmit} className="settings-form">
-        <label>Enter your admin email</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <button type="submit" disabled={loading}>
-          {loading ? "Sending..." : "Send Reset Link"}
-        </button>
-        {message && <p className={`msg ${message.includes("✅") ? "success" : "error"}`}>{message}</p>}
-      </form>
+    <div className="auth-page">
+      <div className="auth-card">
+        <h1 className="auth-page-title">Forgot Password</h1>
+        {sent ? <p className="auth-success">Reset link sent! Check your email.</p> : (
+          <>
+            <p className="auth-subtitle">Enter your email to receive a reset link.</p>
+            <input className="auth-input" type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <button className="auth-button" onClick={handleSubmit} disabled={loading}>{loading ? "Sending..." : "Send Reset Link"}</button>
+          </>
+        )}
+        <Link to="/" className="auth-back">Back to Home</Link>
+      </div>
     </div>
   );
 }

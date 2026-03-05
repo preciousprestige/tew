@@ -1,268 +1,115 @@
 import React, { useState, useEffect } from "react";
-import { getOrders, updateOrder } from "../api";
-import Table from "../components/Table";
-import { toast } from "react-toastify";
+import "./Dashboard.css";
+import "./Products.css";
+const API = process.env.REACT_APP_API_URL;
+
+const STATUS_COLORS = { pending: "yellow", processing: "yellow", completed: "green", cancelled: "red" };
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [statusUpdate, setStatusUpdate] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const token = localStorage.getItem("token");
+  const headers = { "Content-Type": "application/json", Authorization: "Bearer " + token };
 
-  const loadOrders = async () => {
-    try {
-      setLoading(true);
-      const data = await getOrders();
-      setOrders(data || []);
-    } catch (err) {
-      toast.error("Failed to load orders");
-    } finally {
-      setLoading(false);
-    }
+  const load = () => {
+    fetch(API + "/orders", { headers }).then((r) => r.json())
+      .then((d) => setOrders(Array.isArray(d) ? d : d.orders || []))
+      .finally(() => setLoading(false));
+  };
+  useEffect(load, []);
+
+  const updateStatus = async (id, status) => {
+    const res = await fetch(API + "/orders/" + id, { method: "PUT", headers, body: JSON.stringify({ status }) });
+    const updated = await res.json();
+    setOrders(prev => prev.map(o => o._id === id ? updated : o));
+    if (selected && selected._id === id) setSelected(updated);
   };
 
-  useEffect(() => {
-    loadOrders();
-  }, []);
-
-  const openOrderPopup = (order) => {
-    setSelectedOrder(order);
-    setStatusUpdate(order.status || "pending");
-    setShowPopup(true);
-  };
-
-  const closePopup = () => {
-    setShowPopup(false);
-    setSelectedOrder(null);
-  };
-
-  const handleStatusChange = async () => {
-    try {
-      if (!selectedOrder) return;
-      await updateOrder(selectedOrder._id, { status: statusUpdate });
-      toast.success("✅ Order status updated!");
-      await loadOrders();
-      closePopup();
-    } catch {
-      toast.error("Failed to update status");
-    }
-  };
-
-  const columns = [
-    { key: "_id", label: "ID", className: "w-20 text-center" },
-    { key: "paymentResult.name", label: "Customer", className: "w-48" },
-    { key: "totalPrice", label: "Total (₦)", className: "w-32 text-right" },
-    { key: "status", label: "Status", className: "w-32 capitalize" },
-  ];
-
-  const activeOrders = orders.filter(
-    (o) => o.status === "pending" || o.status === "processing"
-  );
-  const completedOrders = orders.filter(
-    (o) => o.status === "completed" || o.status === "cancelled"
-  );
+  if (selected) {
+    const s = selected.shippingAddress || {};
+    const p = selected.paymentResult || {};
+    return (
+      <div>
+        <button className="admin-btn-outline" style={{marginBottom:"1.5rem"}} onClick={() => setSelected(null)}>← Back to Orders</button>
+        <h1 className="admin-page-title">Order #{selected._id.slice(-8).toUpperCase()}</h1>
+        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"2rem", marginBottom:"2rem"}}>
+          <div style={{background:"#fff", padding:"1.5rem", border:"1px solid #ececec", borderRadius:4}}>
+            <h3 style={{fontFamily:"Georgia,serif", fontSize:"0.95rem", letterSpacing:"1px", marginBottom:"1rem", textTransform:"uppercase"}}>Customer & Shipping</h3>
+            <p style={{fontSize:"0.9rem", lineHeight:2, color:"#333"}}>
+              <strong>Name:</strong> {p.name || "Guest"}<br/>
+              <strong>Email:</strong> {p.email || "-"}<br/>
+              <strong>Phone:</strong> {p.phone || "-"}<br/>
+              <strong>Address:</strong> {s.address}<br/>
+              <strong>City:</strong> {s.city}<br/>
+              <strong>State:</strong> {s.state}<br/>
+              {p.note && <span><strong>Note:</strong> {p.note}</span>}
+            </p>
+          </div>
+          <div style={{background:"#fff", padding:"1.5rem", border:"1px solid #ececec", borderRadius:4}}>
+            <h3 style={{fontFamily:"Georgia,serif", fontSize:"0.95rem", letterSpacing:"1px", marginBottom:"1rem", textTransform:"uppercase"}}>Order Status</h3>
+            <p style={{fontSize:"0.85rem", lineHeight:2, color:"#555", marginBottom:"1rem"}}>
+              <strong>Date:</strong> {new Date(selected.createdAt).toLocaleString()}<br/>
+              <strong>Payment:</strong> <span className={"badge " + (selected.paid ? "green" : "red")}>{selected.paid ? "Paid" : "Unpaid"}</span><br/>
+              <strong>Status:</strong> <span className={"badge " + (STATUS_COLORS[selected.status] || "yellow")}>{selected.status}</span>
+            </p>
+            <p style={{fontSize:"0.8rem", color:"#999", marginBottom:"0.5rem", letterSpacing:"1px", textTransform:"uppercase"}}>Update Status</p>
+            <div style={{display:"flex", gap:"0.5rem", flexWrap:"wrap"}}>
+              {["pending","processing","completed","cancelled"].map(s => (
+                <button key={s} className={selected.status === s ? "admin-btn" : "admin-btn-outline"} 
+                  style={{padding:"6px 14px", fontSize:"0.78rem", textTransform:"capitalize"}}
+                  onClick={() => updateStatus(selected._id, s)}>{s}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div style={{background:"#fff", padding:"1.5rem", border:"1px solid #ececec", borderRadius:4}}>
+          <h3 style={{fontFamily:"Georgia,serif", fontSize:"0.95rem", letterSpacing:"1px", marginBottom:"1rem", textTransform:"uppercase"}}>Items Ordered</h3>
+          <table className="admin-table">
+            <thead><tr><th>Product</th><th>Size</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr></thead>
+            <tbody>
+              {(selected.items || []).map((item, i) => (
+                <tr key={i}>
+                  <td style={{display:"flex", alignItems:"center", gap:"0.8rem"}}>
+                    {item.image && <img src={item.image} alt={item.name} style={{width:40, height:48, objectFit:"cover"}} />}
+                    {item.name}
+                  </td>
+                  <td>{item.size || '-'}</td><td>{item.qty}</td>
+                  <td>NGN {Number(item.price).toLocaleString()}</td>
+                  <td>NGN {(item.price * item.qty).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div style={{textAlign:"right", marginTop:"1rem", fontSize:"0.85rem", color:"#555"}}>
+            {selected.deliveryFee > 0 && <p>Delivery Fee: NGN {Number(selected.deliveryFee).toLocaleString()}</p>}
+            <p style={{fontWeight:600, fontSize:"1rem", color:"#1a1a1a"}}>Total: NGN {Number(selected.totalPrice).toLocaleString()}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="admin-table-wrapper">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-[#a17c4d]">Orders</h1>
-      </div>
-
-      {loading ? (
-        <p className="text-center text-[#a17c4d]">Loading...</p>
-      ) : (
-        <div className="admin-table-container space-y-10">
-          {/* ACTIVE ORDERS */}
-          <div>
-            <h2 className="text-xl font-semibold text-[#a17c4d] mb-2">
-              🟡 Pending / Processing Orders
-            </h2>
-            {activeOrders.length > 0 ? (
-              <Table columns={columns} data={activeOrders} onView={openOrderPopup} />
-            ) : (
-              <p className="text-center text-gray-500">No active orders</p>
-            )}
-          </div>
-
-          {/* COMPLETED / CANCELLED */}
-          <div>
-            <h2 className="text-xl font-semibold text-[#a17c4d] mb-2">
-              ✅ Completed / Cancelled Orders
-            </h2>
-            {completedOrders.length > 0 ? (
-              <Table columns={columns} data={completedOrders} onView={openOrderPopup} />
-            ) : (
-              <p className="text-center text-gray-500">No completed or cancelled orders</p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* POPUP */}
-      {showPopup && selectedOrder && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "rgba(0,0,0,0.6)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            backdropFilter: "blur(5px)",
-          }}
-          onClick={closePopup}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              background: "#fffaf5",
-              borderRadius: "10px",
-              width: "550px",
-              maxHeight: "85vh",
-              overflowY: "auto",
-              padding: "20px",
-              boxShadow: "0 0 15px rgba(0,0,0,0.2)",
-              color: "#3b2a1a",
-            }}
-          >
-            <h2 style={{ color: "#a17c4d", fontSize: "20px", marginBottom: "15px" }}>
-              Order Details
-            </h2>
-
-            <p>
-              <strong>Customer:</strong> {selectedOrder.paymentResult?.name}
-            </p>
-            <p>
-              <strong>Contact:</strong> {selectedOrder.paymentResult?.phone} |{" "}
-              {selectedOrder.paymentResult?.email}
-            </p>
-            <p>
-              <strong>Address:</strong> {selectedOrder.shippingAddress?.address},{" "}
-              {selectedOrder.shippingAddress?.city},{" "}
-              {selectedOrder.shippingAddress?.state}
-            </p>
-            <p>
-              <strong>Total:</strong> ₦{selectedOrder.totalPrice}
-            </p>
-            <p>
-              <strong>Delivery Fee:</strong> ₦{selectedOrder.deliveryFee}
-            </p>
-
-            {/* Status */}
-            <div style={{ marginTop: "15px" }}>
-              <label
-                htmlFor="status"
-                style={{ display: "block", marginBottom: "6px", color: "#a17c4d" }}
-              >
-                Update Status:
-              </label>
-
-              <select
-                id="status"
-                value={statusUpdate}
-                onChange={(e) => setStatusUpdate(e.target.value)}
-                style={{
-                  padding: "6px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                  width: "100%",
-                }}
-              >
-                <option value="pending">Pending</option>
-                <option value="processing">Processing</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-
-              <button
-                onClick={handleStatusChange}
-                style={{
-                  background: "#4b7f52",
-                  color: "#fff",
-                  border: "none",
-                  padding: "8px 14px",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                  marginTop: "10px",
-                }}
-              >
-                Save Status
-              </button>
-            </div>
-
-            {/* ITEMS */}
-            <div style={{ marginTop: "20px" }}>
-              <h4 style={{ color: "#a17c4d", marginBottom: "10px" }}>
-                Ordered Items
-              </h4>
-
-              {selectedOrder.items?.map((item, i) => {
-                const API_BASE =
-                  process.env.REACT_APP_API_URL || "http://localhost:5000";
-
-                const imageSrc = item.image?.startsWith("http")
-                  ? item.image
-                  : item.image
-                  ? `${API_BASE}${item.image}`
-                  : Array.isArray(item.images) && item.images[0]
-                  ? item.images[0].startsWith("http")
-                    ? item.images[0]
-                    : `${API_BASE}${item.images[0]}`
-                  : "https://via.placeholder.com/100x120?text=No+Image";
-
-                return (
-                  <div
-                    key={i}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      padding: "6px 0",
-                      borderBottom: "1px solid #eee",
-                    }}
-                  >
-                    <div style={{ display: "flex", gap: "10px" }}>
-                      <img
-                        src={imageSrc}
-                        alt={item.name}
-                        width="50"
-                        height="60"
-                        style={{
-                          borderRadius: "6px",
-                          objectFit: "cover",
-                        }}
-                      />
-                      <div>
-                        <p><strong>{item.name}</strong></p>
-                        <p>Qty: {item.qty}</p>
-                      </div>
-                    </div>
-
-                    <p>₦{item.price}</p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div style={{ textAlign: "right", marginTop: "15px" }}>
-              <button
-                onClick={closePopup}
-                style={{
-                  background: "#a17c4d",
-                  color: "#fff",
-                  padding: "8px 14px",
-                  borderRadius: "5px",
-                }}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
+    <div>
+      <h1 className="admin-page-title">Orders</h1>
+      {loading ? <p>Loading...</p> : orders.length === 0 ? <p className="empty-msg">No orders yet.</p> : (
+        <table className="admin-table">
+          <thead><tr><th>ID</th><th>Customer</th><th>Date</th><th>Total</th><th>Paid</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            {orders.map((order) => (
+              <tr key={order._id}>
+                <td>#{order._id.slice(-6)}</td>
+                <td>{(order.paymentResult && order.paymentResult.name) || "Guest"}</td>
+                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                <td>NGN {Number(order.totalPrice).toLocaleString()}</td>
+                <td><span className={"badge " + (order.paid ? "green" : "red")}>{order.paid ? "Paid" : "Unpaid"}</span></td>
+                <td><span className={"badge " + (STATUS_COLORS[order.status] || "yellow")}>{order.status}</span></td>
+                <td><button className="table-btn" onClick={() => setSelected(order)}>View</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );
