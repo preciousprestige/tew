@@ -22,8 +22,8 @@ export default function AuthModal({ type, onClose }) {
       // ✅ Correct backend endpoints
       const url =
         authType === "login"
-          ? "http://localhost:5000/api/auth/login"
-          : "http://localhost:5000/api/auth/register";
+          ? "process.env.REACT_APP_API_URL/api/auth/login"
+          : "process.env.REACT_APP_API_URL/api/auth/register";
 
       const payload =
         authType === "login"
