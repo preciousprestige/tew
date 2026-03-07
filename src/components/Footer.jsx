@@ -43,7 +43,7 @@ export default function Footer() {
               <WhatsAppIcon /> +234 806 869 0024
             </a>
             <a href="mailto:tewoman2022@gmail.com" className="social-link">
-              <GmailIcon /> tewoman2022@gmail.com
+              <GmailIcon /> theexquisitewoman01@gmail.com
             </a>
           </div>
         </div>
