@@ -34,3 +34,20 @@
   .feature-item { border-right: none; border-bottom: 1px solid #e8e0d8; }
   .welcome-nav { padding: 1rem 1.5rem; }
 }
+
+@media (max-width: 768px) {
+  .welcome-nav { padding: 1rem; }
+  .welcome-logo-img { height: 36px; }
+  .welcome-nav-links button { padding: 6px 12px; font-size: 0.75rem; }
+  .hero { grid-template-columns: 1fr; padding: 2rem 1rem; min-height: auto; gap: 1.5rem; }
+  .hero-title { font-size: 2.4rem; }
+  .hero-sub { font-size: 0.88rem; max-width: 100%; }
+  .hero-images { height: 280px; }
+  .hero-ctas { flex-direction: column; }
+  .cta-primary, .cta-secondary { width: 100%; text-align: center; }
+  .intro-section { padding: 2rem 1rem; }
+  .intro-grid { grid-template-columns: 1fr; }
+  .intro-img { height: 240px; }
+  .welcome-features { grid-template-columns: 1fr; }
+  .feature-item { padding: 1.5rem 1rem; border-right: none; border-bottom: 1px solid #e8e0d8; }
+}

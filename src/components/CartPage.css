@@ -27,3 +27,11 @@
 .cart-empty button { padding: 12px 28px; background: #1a1a1a; color: #fff; border: none; font-size: 0.85rem; cursor: pointer; }
 .cart-empty button:hover { background: #c9a96e; }
 @media (max-width: 768px) { .cart-inner { grid-template-columns: 1fr; } }
+
+@media (max-width: 768px) {
+  .cart-page { padding: 1.5rem 1rem; }
+  .cart-title { font-size: 1.4rem; }
+  .cart-item-img { width: 80px; height: 96px; flex-shrink: 0; }
+  .cart-item-name { font-size: 0.85rem; padding-right: 1.5rem; }
+  .cart-item-details { min-width: 0; }
+}
