@@ -23,3 +23,21 @@
 .skeleton-card { aspect-ratio: 3/4; background: linear-gradient(90deg, #f0ebe4 25%, #e8e0d8 50%, #f0ebe4 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
 @keyframes shimmer { to { background-position: -200% 0; } }
 .empty-state { text-align: center; padding: 4rem; color: #999; }
+
+@media (max-width: 768px) {
+  .home { padding: 1.5rem 1rem; }
+  .home-filters { flex-direction: column; align-items: stretch; }
+  .search-input { width: 100%; }
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .loading-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .product-info { padding: 0.7rem; }
+  .product-name { font-size: 0.82rem; }
+  .product-price { font-size: 0.85rem; }
+  .add-to-cart-btn { font-size: 0.72rem; padding: 8px; letter-spacing: 0.5px; }
+}
+
+@media (max-width: 480px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+  .loading-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+  .product-info { padding: 0.5rem; }
+}
