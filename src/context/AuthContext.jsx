@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
       if (!token) { setLoading(false); return; }
       try {
         const res = await fetch(API + "/auth/profile", { headers: { Authorization: "Bearer " + token } });
-        if (res.ok) { const data = await res.json(); setUser(data); } else { logout(); }
+        if (res.ok) { const data = await res.json(); setUser(data.user || data); } else { logout(); }
       } catch { logout(); } finally { setLoading(false); }
     };
     fetchProfile();
