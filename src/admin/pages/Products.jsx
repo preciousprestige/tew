@@ -1,10 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
+import imageCompression from "browser-image-compression";
 import "./Dashboard.css";
 import "./Products.css";
+
 const API = process.env.REACT_APP_API_URL;
-const BASE = API.replace("/api", "");
 
 const emptyForm = { name: "", price: "", brand: "", category: "", shopCategory: "", description: "", countInStock: "", discount: "" };
+
+// ✅ Helper: returns correct image URL (Cloudinary full URL or fallback)
+const getImgSrc = (img) => {
+  if (!img) return "/placeholder.png";
+  if (img.startsWith("http")) return img; // Cloudinary URL
+  return img; // fallback
+};
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -14,6 +22,7 @@ export default function Products() {
   const [editId, setEditId] = useState(null);
   const [images, setImages] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [compressing, setCompressing] = useState(false);
   const fileRef = useRef();
   const token = localStorage.getItem("token");
   const authHeaders = { Authorization: "Bearer " + token };
@@ -25,12 +34,30 @@ export default function Products() {
   };
   useEffect(load, []);
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const newFiles = Array.from(e.target.files);
-    const combined = [...images, ...newFiles].slice(0, 3);
-    setImages(combined);
-    setPreviews(combined.map(f => URL.createObjectURL(f)));
     e.target.value = "";
+
+    setCompressing(true);
+    try {
+      const compressionOptions = {
+        maxSizeMB: 2,
+        maxWidthOrHeight: 1000,
+        useWebWorker: true,
+      };
+
+      const compressed = await Promise.all(
+        newFiles.map(file => imageCompression(file, compressionOptions))
+      );
+
+      const combined = [...images, ...compressed].slice(0, 3);
+      setImages(combined);
+      setPreviews(combined.map(f => URL.createObjectURL(f)));
+    } catch (err) {
+      alert("Image compression failed: " + err.message);
+    } finally {
+      setCompressing(false);
+    }
   };
 
   const removeImage = (i) => {
@@ -44,6 +71,10 @@ export default function Products() {
     if (!form.name || !form.price || !form.brand || !form.category) {
       alert("Name, price, brand and category are required."); return;
     }
+    if (images.length === 0 && !editId) {
+      alert("Please upload at least 1 image."); return;
+    }
+
     const fd = new FormData();
     Object.entries(form).forEach(([k, v]) => { if (v) fd.append(k, v); });
     images.forEach(img => fd.append("images", img));
@@ -61,7 +92,8 @@ export default function Products() {
 
   const handleEdit = (p) => {
     setForm({ name: p.name||"", price: p.price||"", brand: p.brand||"", category: p.category||"", shopCategory: p.shopCategory||"", description: p.description||"", countInStock: p.countInStock!=null?p.countInStock:"", discount: p.discount||"" });
-    setImages([]); setPreviews(p.images ? p.images.map(img => BASE + img) : []);
+    setImages([]);
+    setPreviews(p.images ? p.images.map(img => getImgSrc(img)) : []);
     setEditId(p._id); setShowForm(true);
   };
 
@@ -95,7 +127,9 @@ export default function Products() {
           </div>
 
           <div style={{marginBottom:"1rem"}}>
-            <p style={{fontSize:"0.78rem", letterSpacing:"1.5px", textTransform:"uppercase", color:"#999", marginBottom:"0.6rem"}}>Product Images (min 1, max 3)</p>
+            <p style={{fontSize:"0.78rem", letterSpacing:"1.5px", textTransform:"uppercase", color:"#999", marginBottom:"0.6rem"}}>
+              Product Images (min 1, max 3)
+            </p>
             <div style={{display:"flex", gap:"0.8rem", flexWrap:"wrap", marginBottom:"0.8rem"}}>
               {previews.map((src, i) => (
                 <div key={i} style={{position:"relative", width:90, height:110}}>
@@ -106,15 +140,21 @@ export default function Products() {
                 </div>
               ))}
               {previews.length < 3 && (
-                <div onClick={() => fileRef.current.click()} style={{width:90, height:110, border:"2px dashed #ddd", borderRadius:2, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"#999", fontSize:"1.5rem"}}>+</div>
+                <div onClick={() => !compressing && fileRef.current.click()} style={{width:90, height:110, border:"2px dashed #ddd", borderRadius:2, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"#999", fontSize:"1.5rem", flexDirection:"column", gap:"4px"}}>
+                  {compressing ? <span style={{fontSize:"0.7rem"}}>...</span> : "+"}
+                </div>
               )}
             </div>
             <input ref={fileRef} type="file" accept="image/*" multiple style={{display:"none"}} onChange={handleImageChange} />
-            <p style={{fontSize:"0.75rem", color:"#bbb"}}>Click + to upload images (1–3 images)</p>
+            <p style={{fontSize:"0.75rem", color:"#bbb"}}>
+              {compressing ? "Compressing images..." : "Click + to upload images (1–3 images, auto-compressed)"}
+            </p>
           </div>
 
           <div className="form-actions">
-            <button className="admin-btn" onClick={handleSubmit}>{editId ? "Update" : "Create"}</button>
+            <button className="admin-btn" onClick={handleSubmit} disabled={compressing}>
+              {compressing ? "Processing..." : editId ? "Update" : "Create"}
+            </button>
             <button className="admin-btn-outline" onClick={() => { setShowForm(false); setEditId(null); }}>Cancel</button>
           </div>
         </div>
@@ -126,7 +166,7 @@ export default function Products() {
           <tbody>
             {products.map((p) => (
               <tr key={p._id}>
-                <td><img src={p.images && p.images[0] ? BASE + p.images[0] : "/placeholder.png"} alt={p.name} style={{width:48, height:56, objectFit:"cover"}} /></td>
+                <td><img src={getImgSrc(p.images && p.images[0])} alt={p.name} style={{width:48, height:56, objectFit:"cover"}} /></td>
                 <td>{p.name}</td><td>{p.brand||"-"}</td><td>{p.category||"-"}</td>
                 <td>NGN {Number(p.price).toLocaleString()}</td><td>{p.countInStock}</td>
                 <td>
