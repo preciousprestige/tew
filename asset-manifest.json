@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/tew/static/css/main.bcf920c5.css",
-    "main.js": "/tew/static/js/main.5073fa94.js",
-    "static/js/453.a0bbbed1.chunk.js": "/tew/static/js/453.a0bbbed1.chunk.js",
-    "static/media/intro2.jpg": "/tew/static/media/intro2.b03d8f7960b7ae9a64be.jpg",
-    "static/media/hero2.png": "/tew/static/media/hero2.0bb29d1a1ef3ac6e8101.png",
-    "static/media/intro1.jpg": "/tew/static/media/intro1.8fd9d49e253dfca755f2.jpg",
-    "static/media/hero1.png": "/tew/static/media/hero1.b8f08188d94b6305b87e.png",
-    "static/media/tew-logo.png": "/tew/static/media/tew-logo.aa71ecb5c137d7f1be9f.png",
-    "index.html": "/tew/index.html",
-    "main.bcf920c5.css.map": "/tew/static/css/main.bcf920c5.css.map",
-    "main.5073fa94.js.map": "/tew/static/js/main.5073fa94.js.map",
-    "453.a0bbbed1.chunk.js.map": "/tew/static/js/453.a0bbbed1.chunk.js.map"
+    "main.css": "/static/css/main.ef9ef69c.css",
+    "main.js": "/static/js/main.23ed049a.js",
+    "static/js/453.8e4cf56d.chunk.js": "/static/js/453.8e4cf56d.chunk.js",
+    "static/media/intro2.jpg": "/static/media/intro2.b03d8f7960b7ae9a64be.jpg",
+    "static/media/intro1.jpg": "/static/media/intro1.0bb29d1a1ef3ac6e8101.jpg",
+    "static/media/hero2.png": "/static/media/hero2.8fd9d49e253dfca755f2.png",
+    "static/media/hero1.png": "/static/media/hero1.b8f08188d94b6305b87e.png",
+    "static/media/tew-logo.png": "/static/media/tew-logo.aa71ecb5c137d7f1be9f.png",
+    "index.html": "/index.html",
+    "main.ef9ef69c.css.map": "/static/css/main.ef9ef69c.css.map",
+    "main.23ed049a.js.map": "/static/js/main.23ed049a.js.map",
+    "453.8e4cf56d.chunk.js.map": "/static/js/453.8e4cf56d.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.bcf920c5.css",
-    "static/js/main.5073fa94.js"
+    "static/css/main.ef9ef69c.css",
+    "static/js/main.23ed049a.js"
   ]
 }
