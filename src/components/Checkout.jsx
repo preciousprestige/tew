@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { imgUrl } from "../utils/imgUrl";
 import "./Checkout.css";
-const API = process.env.REACT_APP_API_URL;
 
+const API = process.env.REACT_APP_API_URL;
 const CONTACT_MSG = "For international shipping, please contact us via WhatsApp (+234 806 869 0024), Instagram (@officially.tew), or Email (tewoman2022@gmail.com).";
 
 export default function Checkout() {
@@ -27,42 +26,96 @@ export default function Checkout() {
     ]);
   }, []);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://js.paystack.co/v1/inline.js";
+    script.async = true;
+    document.body.appendChild(script);
+    return () => document.body.removeChild(script);
+  }, []);
 
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
   const deliveryFee = selectedZone && !selectedZone.note ? selectedZone.fee : 0;
   const orderTotal = cartTotal + deliveryFee;
 
   const handleSubmit = async () => {
     if (!form.name || !form.email || !form.address) { alert("Please fill in name, email and address."); return; }
+    const missingSize = cartItems.find(item => !item.size);
+    if (missingSize) { alert("Please select a size for \"" + missingSize.name + "\" before checking out."); return; }
     if (!selectedZone) { alert("Please select a delivery zone."); return; }
     if (selectedZone.note) { alert(CONTACT_MSG); return; }
+
     try {
       setLoading(true);
       const headers = { "Content-Type": "application/json" };
       if (token) headers["Authorization"] = "Bearer " + token;
+
       const orderPayload = {
         customer: { name: form.name, email: form.email, phone: form.phone, address: form.address, city: form.city, state: form.state, note: form.note },
         items: cartItems.map((item) => ({
           product: item._id, name: item.name,
           image: item.images && item.images[0] ? item.images[0] : item.image || "",
-          price: item.price, qty: item.quantity,
-          size: item.size || ""
+          price: item.price, qty: item.quantity, size: item.size || ""
         })),
         totalPrice: orderTotal,
         deliveryFee,
         deliveryZone: selectedZone.name,
       };
+
       const res = await fetch(API + "/orders", { method: "POST", headers, body: JSON.stringify(orderPayload) });
       const data = await res.json();
       if (!res.ok) { alert(data.message || "Failed to place order."); return; }
-      clearCart();
-      navigate("/home");
-      alert("Order placed successfully! We will contact you shortly.");
-    } catch (err) { alert("Something went wrong. Please try again."); }
-    finally { setLoading(false); }
+
+      const orderId = data._id;
+
+      const paystackRes = await fetch(API + "/paystack/init/" + orderId, { method: "POST", headers });
+      const paystackData = await paystackRes.json();
+      if (!paystackRes.ok) { alert(paystackData.message || "Payment initialization failed."); return; }
+
+      const handler = window.PaystackPop.setup({
+        key: process.env.REACT_APP_PAYSTACK_PUBLIC_KEY,
+        email: form.email,
+        amount: orderTotal * 100,
+        ref: paystackData.reference,
+        currency: "NGN",
+        onClose: () => {
+          alert("Payment cancelled. Your order has been saved.");
+          clearCart();
+          navigate("/home");
+        },
+        callback: async (response) => {
+          try {
+            const verifyRes = await fetch(API + "/paystack/verify/" + response.reference, { headers });
+            const verifyData = await verifyRes.json();
+            if (verifyRes.ok && verifyData.data && verifyData.data.status === "success") {
+              clearCart();
+              alert("Payment successful! Your order has been confirmed.");
+            } else {
+              alert("Payment received but verification pending. Reference: " + response.reference);
+            }
+          } catch {
+            alert("Payment received. Reference: " + response.reference);
+          }
+          clearCart();
+          navigate("/home");
+        },
+      });
+
+      handler.openIframe();
+
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (cartItems.length === 0) return <div className="checkout-empty"><h2>Your cart is empty</h2><button onClick={() => navigate("/home")}>Go Shopping</button></div>;
+  if (cartItems.length === 0) return (
+    <div className="checkout-empty">
+      <h2>Your cart is empty</h2>
+      <button onClick={() => navigate("/home")}>Go Shopping</button>
+    </div>
+  );
 
   return (
     <div className="checkout-page">
@@ -110,7 +163,9 @@ export default function Checkout() {
           )}
           <div className="checkout-total"><span>Total</span><span>NGN {orderTotal.toLocaleString()}</span></div>
           {(!selectedZone || !selectedZone.note) && (
-            <button className="pay-btn" onClick={handleSubmit} disabled={loading}>{loading ? "Processing..." : "Place Order"}</button>
+            <button className="pay-btn" onClick={handleSubmit} disabled={loading}>
+              {loading ? "Processing..." : "Pay NGN " + orderTotal.toLocaleString()}
+            </button>
           )}
         </div>
       </div>
