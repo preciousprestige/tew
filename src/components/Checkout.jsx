@@ -71,37 +71,9 @@ export default function Checkout() {
       const paystackRes = await fetch(API + "/paystack/init/" + orderId, { method: "POST", headers, body: JSON.stringify({ email: form.email }) });
       const paystackData = await paystackRes.json();
       if (!paystackRes.ok) { alert(paystackData.message || "Payment initialization failed."); return; }
+      clearCart();
+      window.location.href = paystackData.authorizationUrl;
 
-      const handler = window.PaystackPop.setup({
-        key: process.env.REACT_APP_PAYSTACK_PUBLIC_KEY,
-        email: form.email,
-        amount: orderTotal * 100,
-        ref: paystackData.reference,
-        currency: "NGN",
-        onClose: () => {
-          alert("Payment cancelled. Your order has been saved.");
-          clearCart();
-          navigate("/home");
-        },
-        callback: async (response) => {
-          try {
-            const verifyRes = await fetch(API + "/paystack/verify/" + response.reference, { headers });
-            const verifyData = await verifyRes.json();
-            if (verifyRes.ok && verifyData.data && verifyData.data.status === "success") {
-              clearCart();
-              alert("Payment successful! Your order has been confirmed.");
-            } else {
-              alert("Payment received but verification pending. Reference: " + response.reference);
-            }
-          } catch {
-            alert("Payment received. Reference: " + response.reference);
-          }
-          clearCart();
-          navigate("/home");
-        },
-      });
-
-      handler.openIframe();
 
     } catch (err) {
       alert("Something went wrong. Please try again.");
