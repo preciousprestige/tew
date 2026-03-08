@@ -68,7 +68,7 @@ export default function Checkout() {
 
       const orderId = data._id;
 
-      const paystackRes = await fetch(API + "/paystack/init/" + orderId, { method: "POST", headers });
+      const paystackRes = await fetch(API + "/paystack/init/" + orderId, { method: "POST", headers, body: JSON.stringify({ email: form.email }) });
       const paystackData = await paystackRes.json();
       if (!paystackRes.ok) { alert(paystackData.message || "Payment initialization failed."); return; }
 
