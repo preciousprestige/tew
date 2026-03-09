@@ -10,6 +10,7 @@ import ProductDetails from "./pages/ProductDetails";
 import CartPage from "./components/CartPage";
 import Checkout from "./components/Checkout";
 import MyOrders from "./pages/MyOrders";
+import OrderConfirmation from "./pages/OrderConfirmation";
 import LayoutAdmin from "./admin/components/Layout";
 import Dashboard from "./admin/pages/Dashboard";
 import Products from "./admin/pages/Products";
@@ -40,6 +41,7 @@ export default function App() {
         <Route path="/product/:id" element={<ShopLayout><ProductDetails /></ShopLayout>} />
         <Route path="/cart" element={<ShopLayout><CartPage /></ShopLayout>} />
         <Route path="/checkout" element={<ShopLayout><Checkout /></ShopLayout>} />
+        <Route path="/order/:id" element={<ShopLayout><OrderConfirmation /></ShopLayout>} />
         <Route path="/my-orders" element={<ShopLayout><MyOrders /></ShopLayout>} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
