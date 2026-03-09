@@ -18,7 +18,7 @@ export default function AuthModal({ type, onClose }) {
         ? { email: formData.email, password: formData.password }
         : { name: formData.fullName, email: formData.email, password: formData.password };
       const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      const data = await res.json();
+      let data; try { data = await res.json(); } catch { alert("Server is starting up, please wait 30 seconds and try again."); return; }
       if (!res.ok) { alert(data.msg || data.message || "Something went wrong"); return; }
       if (data.token) {
         login(data.token, data.user);

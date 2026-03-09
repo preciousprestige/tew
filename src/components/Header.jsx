@@ -20,7 +20,8 @@ export default function Header() {
             <Link to="/home" onClick={() => setMenuOpen(false)}>Shop</Link>
             <Link to="/cart" onClick={() => setMenuOpen(false)}>Cart {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}</Link>
             {user ? (
-              <button className="nav-btn" onClick={() => { logout(); setMenuOpen(false); }}>Logout</button>
+              <><Link to="/my-orders" onClick={() => setMenuOpen(false)}>My Orders</Link>
+              <button className="nav-btn" onClick={() => { logout(); setMenuOpen(false); }}>Logout</button></>
             ) : (
               <>
                 <button className="nav-btn" onClick={() => { setAuthType("login"); setShowAuth(true); }}>Sign In</button>
