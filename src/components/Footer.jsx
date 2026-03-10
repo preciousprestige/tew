@@ -42,13 +42,13 @@ export default function Footer() {
             <a href="https://wa.me/2348068690024" target="_blank" rel="noreferrer" className="social-link">
               <WhatsAppIcon /> +234 806 869 0024
             </a>
-            <a href="mailto:tewoman2022@gmail.com" className="social-link">
+            <a href="mailto:theexquisitewoman01@gmail.com" className="social-link">
               <GmailIcon /> theexquisitewoman01@gmail.com
             </a>
           </div>
         </div>
       </div>
-      <p className="footer-copy">© 2025 TEW. All rights reserved.</p>
+      <p className="footer-copy">© 2026 TEW. All rights reserved.</p>
     </footer>
   );
 }
