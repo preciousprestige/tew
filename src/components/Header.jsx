@@ -15,9 +15,10 @@ export default function Header() {
     <>
       <header className="header">
         <div className="header-inner">
-          <Link to="/home"><img src={logo} alt="TEW" className="header-logo-img" /></Link>
+          <Link to="/home" style={{display:"flex",alignItems:"center",gap:"0.6rem",textDecoration:"none"}}><img src={logo} alt="TEW" className="header-logo-img" /><span style={{fontFamily:"Georgia,serif",fontSize:"1rem",color:"#1a1a1a",letterSpacing:"1px",whiteSpace:"nowrap"}}>The Exquisite Woman</span></Link>
           <nav className={"nav-links" + (menuOpen ? " open" : "")}>
             <Link to="/home" onClick={() => setMenuOpen(false)}>Shop</Link>
+            <Link to="/about" onClick={() => setMenuOpen(false)}>About</Link>
             <Link to="/cart" onClick={() => setMenuOpen(false)}>Cart {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}</Link>
             {user ? (
               <><Link to="/my-orders" onClick={() => setMenuOpen(false)}>My Orders</Link>
