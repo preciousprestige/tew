@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import SizeGuideModal from "../components/SizeGuideModal";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { imgUrl } from "../utils/imgUrl";
@@ -12,6 +13,7 @@ export default function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState("");
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const [activeImg, setActiveImg] = useState(0);
@@ -58,7 +60,7 @@ export default function ProductDetails() {
           <p className="pd-price">NGN {Number(product.price).toLocaleString()}</p>
           <p className="pd-desc">{product.description}</p>
           <div className="pd-sizes">
-            <p className="pd-label">Size</p>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><p className="pd-label">Size</p><button onClick={() => setShowSizeGuide(true)} style={{fontSize:"0.78rem",color:"#c9a96e",background:"none",border:"none",cursor:"pointer",textDecoration:"underline"}}>Size Guide</button></div>
             <div className="size-options">
               {sizes.map((s) => <button key={s} className={"size-btn" + (selectedSize === s ? " active" : "")} onClick={() => setSelectedSize(s)}>{s}</button>)}
             </div>
@@ -76,6 +78,7 @@ export default function ProductDetails() {
           </button>
         </div>
       </div>
+      {showSizeGuide && <SizeGuideModal onClose={() => setShowSizeGuide(false)} />}
     </div>
   );
 }
