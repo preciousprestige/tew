@@ -34,8 +34,8 @@ export default function Welcome() {
           </div>
         </div>
         <div className="hero-images">
-          <img src={hero1} alt="TEW Collection" className="hero-img-1" />
-          <img src={hero2} alt="TEW Style" className="hero-img-2" />
+          <img src={hero2} alt="TEW Collection" className="hero-img-1" />
+          <img src={hero3} alt="TEW Style" className="hero-img-2" />
         </div>
       </section>
       <section className="intro-section">
