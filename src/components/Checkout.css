@@ -1,3 +1,4 @@
+/* ── Checkout Page ── */
 .checkout-page { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
 .checkout-title { font-family: Georgia, serif; font-size: 1.8rem; margin-bottom: 2rem; color: #1a1a1a; }
 .checkout-inner { display: grid; grid-template-columns: 1fr 360px; gap: 3rem; }
@@ -16,9 +17,77 @@
 .spinner-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
 .spinner { width: 36px; height: 36px; border: 3px solid #ddd; border-top-color: #1a1a1a; border-radius: 50%; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-@media (max-width: 768px) { .checkout-inner { grid-template-columns: 1fr; } }
 
+/* ── Custom Order Request Box ── */
+.custom-request-box {
+  margin-top: 1.8rem;
+  padding: 1.2rem 1.4rem;
+  border: 1px dashed #c9a96e;
+  background: #fdfaf6;
+}
+.custom-request-box h3 { margin-bottom: 0.4rem; font-size: 1rem; }
+.custom-request-hint { font-size: 0.82rem; color: #777; line-height: 1.6; margin-bottom: 0.9rem; }
+
+.custom-img-upload-area {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border: 1px dashed #ccc;
+  background: #fff;
+  margin-top: 0.6rem;
+  transition: border-color 0.2s;
+  user-select: none;
+}
+.custom-img-upload-area:hover { border-color: #c9a96e; }
+.custom-img-icon { font-size: 1.1rem; }
+.custom-img-label { font-size: 0.82rem; color: #666; }
+
+.custom-img-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+/* Passport size: 45×55px */
+.custom-img-thumb {
+  position: relative;
+  width: 45px;
+  height: 55px;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.custom-img-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.custom-img-remove {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  font-size: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+}
+.custom-img-remove:hover { background: #c0392b; }
+
+/* ── Responsive ── */
 @media (max-width: 768px) {
+  .checkout-inner { grid-template-columns: 1fr; }
   .checkout-page { padding: 1.5rem 1rem; }
   .checkout-title { font-size: 1.4rem; }
   .checkout-summary { order: -1; }
