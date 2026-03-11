@@ -41,3 +41,26 @@
   .loading-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
   .product-info { padding: 0.5rem; }
 }
+
+/* ── Add this to your existing Home.css ── */
+
+.sort-select {
+  padding: 0.55rem 1rem;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 0.85rem;
+  color: #1a1a1a;
+  cursor: pointer;
+  outline: none;
+  min-width: 220px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a1a1a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  padding-right: 2.2rem;
+}
+
+.sort-select:focus {
+  border-color: #1a1a1a;
+}
