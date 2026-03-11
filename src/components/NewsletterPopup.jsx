@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import newsletterImg from "../assets/newsletter.jpg";
 
 const API = process.env.REACT_APP_API_URL;
@@ -9,18 +8,14 @@ export default function NewsletterPopup() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const location = useLocation();
 
   useEffect(() => {
-    // Only show on the Welcome page ("/")
-    if (location.pathname !== "/") return;
-
     const dismissed = localStorage.getItem("tew_newsletter_dismissed");
     if (!dismissed) {
       const timer = setTimeout(() => setShow(true), 3000);
       return () => clearTimeout(timer);
     }
-  }, [location.pathname]);
+  }, []);
 
   const handleClose = () => {
     localStorage.setItem("tew_newsletter_dismissed", "1");

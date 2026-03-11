@@ -4,7 +4,6 @@ import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import WhatsAppChat from "./components/WhatsAppChat";
-import NewsletterPopup from "./components/NewsletterPopup";
 import NotificationBar from "./components/NotificationBar";
 import Welcome from "./Welcome";
 import Home from "./pages/Home";
@@ -25,7 +24,6 @@ import ForgotPassword from "./admin/pages/ForgotPassword";
 import ResetPassword from "./admin/pages/ResetPassword";
 
 function ShopLayout({ children }) {
-  // WhatsApp added below
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <NotificationBar />
@@ -33,7 +31,6 @@ function ShopLayout({ children }) {
       <main style={{ flex: 1 }}>{children}</main>
       <Footer />
       <WhatsAppChat />
-      <NewsletterPopup />
     </div>
   );
 }
