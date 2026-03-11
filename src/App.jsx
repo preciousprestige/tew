@@ -4,6 +4,7 @@ import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import WhatsAppChat from "./components/WhatsAppChat";
+import NewsletterPopup from "./components/NewsletterPopup";
 import NotificationBar from "./components/NotificationBar";
 import Welcome from "./Welcome";
 import Home from "./pages/Home";
@@ -32,6 +33,7 @@ function ShopLayout({ children }) {
       <main style={{ flex: 1 }}>{children}</main>
       <Footer />
       <WhatsAppChat />
+      <NewsletterPopup />
     </div>
   );
 }
