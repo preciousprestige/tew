@@ -17,7 +17,7 @@ export default function Welcome() {
     <div className="welcome">
       <NotificationBar />
       <nav className="welcome-nav">
-        <img src={logo} alt="TEW" className="welcome-logo-img" />
+        <div style={{display:"flex",alignItems:"center",gap:"0.6rem"}}><img src={logo} alt="TEW" className="welcome-logo-img" /><span style={{fontFamily:"Georgia,serif",fontSize:"1rem",color:"#1a1a1a",letterSpacing:"1px",whiteSpace:"nowrap"}}>The Exquisite Woman</span></div>
         <div className="welcome-nav-links">
           <button onClick={() => { setAuthType("login"); setShowAuth(true); }}>Sign In</button>
           <button className="filled" onClick={() => navigate("/home")}>Shop Now</button>
