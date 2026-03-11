@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import WhatsAppChat from "./components/WhatsAppChat";
 import NotificationBar from "./components/NotificationBar";
 import Welcome from "./Welcome";
 import Home from "./pages/Home";
@@ -23,12 +24,14 @@ import ForgotPassword from "./admin/pages/ForgotPassword";
 import ResetPassword from "./admin/pages/ResetPassword";
 
 function ShopLayout({ children }) {
+  // WhatsApp added below
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <NotificationBar />
       <Header />
       <main style={{ flex: 1 }}>{children}</main>
       <Footer />
+      <WhatsAppChat />
     </div>
   );
 }
