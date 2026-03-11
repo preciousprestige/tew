@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
+
+const API = process.env.REACT_APP_API_URL;
 
 const InstagramIcon = () => (
   <svg className="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -19,8 +21,65 @@ const GmailIcon = () => (
 );
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+
+  const handleSubscribe = async () => {
+    if (!email || !email.includes("@")) { setStatus("error"); return; }
+    setStatus("loading");
+    try {
+      await fetch(API + "/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      setStatus("success");
+      setEmail("");
+    } catch {
+      setStatus("error");
+    }
+  };
+
   return (
     <footer className="footer">
+
+      {/* ── Newsletter Strip ── */}
+      <div className="footer-newsletter">
+        <div className="footer-newsletter-inner">
+          <div className="footer-newsletter-text">
+            <h3>Join the TEW Family</h3>
+            <p>New drops, exclusive offers & style inspiration — straight to your inbox.</p>
+          </div>
+          <div className="footer-newsletter-form">
+            {status === "success" ? (
+              <p className="footer-newsletter-success">✓ You're on the list!</p>
+            ) : (
+              <>
+                <input
+                  type="email"
+                  placeholder="Your email address"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setStatus("idle"); }}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
+                  className="footer-newsletter-input"
+                />
+                <button
+                  onClick={handleSubscribe}
+                  disabled={status === "loading"}
+                  className="footer-newsletter-btn"
+                >
+                  {status === "loading" ? "..." : "Subscribe"}
+                </button>
+              </>
+            )}
+            {status === "error" && (
+              <p className="footer-newsletter-error">Please enter a valid email.</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Main Footer ── */}
       <div className="footer-inner">
         <div className="footer-brand">
           <span className="footer-logo">TEW</span>
