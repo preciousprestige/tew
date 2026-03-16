@@ -9,16 +9,15 @@ const DEFAULT_ZONES = [
   { name: "International", fee: 0, note: "Via contact options" },
 ];
 
-// UK sizing in inches, matching TEW size chart
 const DEFAULT_ROWS = [
-  { size: "6",  bust: "33", waist: "25", hips: "35" },
-  { size: "8",  bust: "35", waist: "28", hips: "39" },
-  { size: "10", bust: "37", waist: "30", hips: "41" },
-  { size: "12", bust: "39", waist: "32", hips: "43" },
-  { size: "14", bust: "41", waist: "34", hips: "46" },
-  { size: "16", bust: "44", waist: "36", hips: "49" },
-  { size: "18", bust: "46", waist: "38", hips: "52" },
-  { size: "20", bust: "48", waist: "40", hips: "55" },
+  { size: "6",  variant: "XS", bust: "33", waist: "25", hips: "35" },
+  { size: "8",  variant: "XS", bust: "35", waist: "28", hips: "39" },
+  { size: "10", variant: "S",  bust: "37", waist: "30", hips: "41" },
+  { size: "12", variant: "M",  bust: "39", waist: "32", hips: "43" },
+  { size: "14", variant: "M",  bust: "41", waist: "34", hips: "46" },
+  { size: "16", variant: "L",  bust: "44", waist: "36", hips: "49" },
+  { size: "18", variant: "L",  bust: "46", waist: "38", hips: "52" },
+  { size: "20", variant: "XL", bust: "48", waist: "40", hips: "55" },
 ];
 
 export default function Settings() {
@@ -60,7 +59,7 @@ export default function Settings() {
     updated[i] = { ...updated[i], [field]: value };
     setRows(updated);
   };
-  const addRow = () => setRows([...rows, { size: "", bust: "", waist: "", hips: "" }]);
+  const addRow = () => setRows([...rows, { size: "", variant: "", bust: "", waist: "", hips: "" }]);
   const removeRow = (i) => setRows(rows.filter((_, idx) => idx !== i));
 
   const saveGuide = async () => {
@@ -79,35 +78,30 @@ export default function Settings() {
       <h1 className="admin-page-title">Settings</h1>
 
       {/* SIZE GUIDE */}
-      <div style={{ background: "#fff", padding: "1.5rem", border: "1px solid #ececec", borderRadius: 4, maxWidth: 600, marginBottom: "2rem" }}>
+      <div style={{ background: "#fff", padding: "1.5rem", border: "1px solid #ececec", borderRadius: 4, maxWidth: 720, marginBottom: "2rem" }}>
         <h3 style={{ fontFamily: "Georgia,serif", fontSize: "1rem", marginBottom: "0.4rem" }}>Size Guide</h3>
-        <p style={{ fontSize: "0.82rem", color: "#999", marginBottom: "1.5rem" }}>
-          UK sizing in inches — shown to customers on product pages.
-        </p>
+        <p style={{ fontSize: "0.82rem", color: "#999", marginBottom: "1.5rem" }}>UK sizing in inches — shown to customers on product pages.</p>
         {guideLoading ? <p style={{ color: "#999", fontSize: "0.85rem" }}>Loading...</p> : (
           <>
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", marginBottom: "1rem" }}>
                 <thead>
                   <tr style={{ background: "#f9f6f2" }}>
-                    {["Size", "Bust (in)", "Waist (in)", "Hip (in)", ""].map((h) => (
-                      <th key={h} style={{
-                        padding: "8px 10px", textAlign: "left", fontWeight: "normal",
-                        color: "#555", borderBottom: "1px solid #e8e0d8", whiteSpace: "nowrap",
-                      }}>{h}</th>
+                    {["UK Size", "Size Variant", "Bust (in)", "Waist (in)", "Hip (in)", ""].map((h) => (
+                      <th key={h} style={{ padding: "8px 10px", textAlign: "left", fontWeight: "normal", color: "#555", borderBottom: "1px solid #e8e0d8", whiteSpace: "nowrap" }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {rows.map((row, i) => (
                     <tr key={i} style={{ borderBottom: "1px solid #f5f0ea" }}>
-                      {["size", "bust", "waist", "hips"].map((field) => (
+                      {["size", "variant", "bust", "waist", "hips"].map((field) => (
                         <td key={field} style={{ padding: "6px 8px" }}>
                           <input
                             className="admin-input"
-                            style={{ padding: "6px 8px", fontSize: "0.82rem", width: 80 }}
-                            value={row[field]}
-                            placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                            style={{ padding: "6px 8px", fontSize: "0.82rem", width: field === "variant" ? 90 : 75 }}
+                            value={row[field] || ""}
+                            placeholder={field === "variant" ? "e.g. XS" : field.charAt(0).toUpperCase() + field.slice(1)}
                             onChange={(e) => updateRow(i, field, e.target.value)}
                           />
                         </td>
@@ -131,12 +125,10 @@ export default function Settings() {
       {/* DELIVERY FEES */}
       <div style={{ background: "#fff", padding: "1.5rem", border: "1px solid #ececec", borderRadius: 4, maxWidth: 600, marginBottom: "2rem" }}>
         <h3 style={{ fontFamily: "Georgia,serif", fontSize: "1rem", marginBottom: "0.4rem" }}>Delivery Fees</h3>
-        <p style={{ fontSize: "0.82rem", color: "#999", marginBottom: "1.5rem" }}>
-          Set delivery fees by location zone. International orders should contact via WhatsApp/Instagram/Email.
-        </p>
+        <p style={{ fontSize: "0.82rem", color: "#999", marginBottom: "1.5rem" }}>Set delivery fees by location zone.</p>
         {zones.map((zone, i) => (
           <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: "0.8rem", marginBottom: "0.8rem", alignItems: "center" }}>
-            <input className="admin-input" placeholder="Zone name (e.g. Within Abuja)" value={zone.name} onChange={(e) => updateZone(i, "name", e.target.value)} />
+            <input className="admin-input" placeholder="Zone name" value={zone.name} onChange={(e) => updateZone(i, "name", e.target.value)} />
             {zone.note ? (
               <input className="admin-input" value="Contact for quote" disabled style={{ color: "#999" }} />
             ) : (
@@ -152,9 +144,9 @@ export default function Settings() {
         <div style={{ marginTop: "1.5rem", padding: "1rem", background: "#f9f6f2", borderRadius: 4 }}>
           <p style={{ fontSize: "0.82rem", color: "#555", lineHeight: 1.7 }}>
             <strong>International shipping</strong> is handled manually via:<br />
-            📸 Instagram: <a href="https://www.instagram.com/officially.tew/" target="_blank" rel="noreferrer" style={{ color: "#c9a96e" }}>@officially.tew</a><br />
-            💬 WhatsApp: <a href="https://wa.me/2348068690024" target="_blank" rel="noreferrer" style={{ color: "#c9a96e" }}>+234 806 869 0024</a><br />
-            📧 Email: <a href="mailto:theexquisitewoman01@gmail.com" style={{ color: "#c9a96e" }}>theexquisitewoman01@gmail.com</a>
+            📸 <a href="https://www.instagram.com/officially.tew/" target="_blank" rel="noreferrer" style={{ color: "#c9a96e" }}>@officially.tew</a><br />
+            💬 <a href="https://wa.me/2348068690024" target="_blank" rel="noreferrer" style={{ color: "#c9a96e" }}>+234 806 869 0024</a><br />
+            📧 <a href="mailto:theexquisitewoman01@gmail.com" style={{ color: "#c9a96e" }}>theexquisitewoman01@gmail.com</a>
           </p>
         </div>
       </div>

@@ -37,3 +37,38 @@
   .pd-main-img-wrap { max-height: 380px; }
   .pd-thumb { width: 56px; height: 68px; }
 }
+/* ── Add these to your ProductDetails.css ── */
+
+/* Replace old .size-btn styles with these circle styles */
+.size-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.size-btn-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #c8c8c8;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.size-btn-circle:hover {
+  border-color: #1a1a1a;
+}
+
+.size-btn-circle.active {
+  border-color: #1a1a1a;
+  background: #1a1a1a;
+  color: #fff;
+}

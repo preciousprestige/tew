@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { imgUrl } from "../utils/imgUrl";
 import "./ProductDetails.css";
+
 const API = process.env.REACT_APP_API_URL;
 
 export default function ProductDetails() {
@@ -19,7 +20,11 @@ export default function ProductDetails() {
   const [activeImg, setActiveImg] = useState(0);
 
   useEffect(() => {
-    fetch(API + "/products/" + id).then((r) => r.json()).then(setProduct).catch(() => setProduct(null)).finally(() => setLoading(false));
+    fetch(API + "/products/" + id)
+      .then((r) => r.json())
+      .then(setProduct)
+      .catch(() => setProduct(null))
+      .finally(() => setLoading(false));
   }, [id]);
 
   const handleAddToCart = () => {
@@ -32,9 +37,13 @@ export default function ProductDetails() {
   if (loading) return <div className="pd-loading">Loading...</div>;
   if (!product) return <div className="pd-loading">Product not found.</div>;
 
-  const sizes = product.sizes || ["XS", "S", "M", "L", "XL"];
+  // Use product-specific sizes if set, otherwise fall back to UK default
+  const sizes = product.sizes && product.sizes.length > 0
+    ? product.sizes
+    : ["6", "8", "10", "12", "14", "16", "18", "20"];
+
   const images = product.images && product.images.length > 0
-    ? product.images.map(img => imgUrl(img))
+    ? product.images.map((img) => imgUrl(img))
     : [imgUrl(product.image || product.imageUrl)];
 
   return (
@@ -55,25 +64,51 @@ export default function ProductDetails() {
             </div>
           )}
         </div>
+
         <div className="pd-info">
           <h1 className="pd-name">{product.name}</h1>
           <p className="pd-price">NGN {Number(product.price).toLocaleString()}</p>
           <p className="pd-desc">{product.description}</p>
+
+          {/* ── Size Selector ── */}
           <div className="pd-sizes">
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><p className="pd-label">Size</p><button onClick={() => setShowSizeGuide(true)} style={{fontSize:"0.78rem",color:"#c9a96e",background:"none",border:"none",cursor:"pointer",textDecoration:"underline"}}>Size Guide</button></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <p className="pd-label">SIZE</p>
+              <button
+                onClick={() => setShowSizeGuide(true)}
+                style={{ fontSize: "0.78rem", color: "#c9a96e", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
+              >
+                Size Guide
+              </button>
+            </div>
             <div className="size-options">
-              {sizes.map((s) => <button key={s} className={"size-btn" + (selectedSize === s ? " active" : "")} onClick={() => setSelectedSize(s)}>{s}</button>)}
+              {sizes.map((s) => (
+                <button
+                  key={s}
+                  className={"size-btn-circle" + (selectedSize === s ? " active" : "")}
+                  onClick={() => setSelectedSize(s)}
+                >
+                  {s}
+                </button>
+              ))}
             </div>
           </div>
+
+          {/* ── Quantity ── */}
           <div className="pd-qty">
-            <p className="pd-label">Quantity</p>
+            <p className="pd-label">QUANTITY</p>
             <div className="qty-control">
               <button onClick={() => setQty(Math.max(1, qty - 1))}>-</button>
               <span>{qty}</span>
               <button onClick={() => setQty(qty + 1)}>+</button>
             </div>
           </div>
-          <button className={"pd-cart-btn" + (added ? " added" : "")} onClick={handleAddToCart} disabled={product.countInStock === 0}>
+
+          <button
+            className={"pd-cart-btn" + (added ? " added" : "")}
+            onClick={handleAddToCart}
+            disabled={product.countInStock === 0}
+          >
             {product.countInStock === 0 ? "Out of Stock" : added ? "Added ✓" : "Add to Cart"}
           </button>
         </div>
