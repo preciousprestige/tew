@@ -39,7 +39,7 @@ export default function SizeGuideModal({ onClose }) {
           display: "flex", justifyContent: "space-between", alignItems: "center",
         }}>
           <span style={{ fontSize: "0.72rem", color: "#e0ddd5", letterSpacing: "1.5px", textTransform: "uppercase" }}>
-            @THE.EXQUISITEWOMAN_
+            THE EXQUISITE WOMAN
           </span>
           <button onClick={onClose} style={{ background: "none", border: "none", color: "#e0ddd5", fontSize: "1.2rem", cursor: "pointer", lineHeight: 1 }}>×</button>
         </div>
