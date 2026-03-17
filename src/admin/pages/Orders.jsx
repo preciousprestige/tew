@@ -9,6 +9,7 @@ export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
+  const [lightbox, setLightbox] = useState(null);
   const token = localStorage.getItem("token");
   const headers = { "Content-Type": "application/json", Authorization: "Bearer " + token };
 
@@ -145,17 +146,35 @@ export default function Orders() {
                 </p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "0.8rem" }}>
                   {cr.images.map((img, i) => (
-                    <a key={i} href={img} target="_blank" rel="noreferrer" title={"View image " + (i + 1)}>
-                      <img
-                        src={img}
-                        alt={"ref " + (i + 1)}
-                        style={{ width: 80, height: 100, objectFit: "cover", border: "1px solid #ddd", display: "block" }}
-                      />
-                    </a>
+                    <img
+                      key={i}
+                      src={img}
+                      alt={"ref " + (i + 1)}
+                      onClick={() => setLightbox(img)}
+                      style={{ width: 80, height: 100, objectFit: "cover", border: "1px solid #ddd", display: "block", cursor: "zoom-in" }}
+                    />
                   ))}
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* ── Lightbox ── */}
+        {lightbox && (
+          <div
+            onClick={() => setLightbox(null)}
+            style={{
+              position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              zIndex: 9999, cursor: "zoom-out"
+            }}
+          >
+            <img
+              src={lightbox}
+              alt="Reference"
+              style={{ maxWidth: "90vw", maxHeight: "90vh", objectFit: "contain", borderRadius: 4 }}
+            />
           </div>
         )}
       </div>
